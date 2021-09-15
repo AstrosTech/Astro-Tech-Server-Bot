@@ -1,0 +1,353 @@
+########################################
+#                                      #
+#        Astro Tech Development        #
+#                                      #
+########################################
+
+##################################################################
+#                                                                #
+#                         Useful Links                           #
+#                                                                #
+##################################################################
+#                                                                #
+#                   Discord Developer Portal                     #
+#                https://discord.com/developers                  #
+#                                                                #
+#                      Hex Color Wheel                           #
+#                 https://htmlcolorcodes.com/                    #
+#                                                                #
+#                         Astro Tech                             #
+#                   https://astro-api.com/                       #
+#                                                                #
+#                       Button Styles                            #
+#https://discordjs.guide/interactions/buttons.html#button-styles #
+##################################################################
+
+#############################################
+#                                           #
+#           General Placeholders            #
+#        * Available in all Embeds *        #
+#############################################
+#     User Placeholders: (If Applicable)    #
+#     {UserID}                              #
+#     {Username}                            #
+#     {CreatedOn}                           #
+#     {UserDiscriminator}                   #
+#                                           #
+#     General Placeholders:                 #
+#     {GuildID}                             #
+#     {Security} (Verification level)       #
+#     {CreatedAt} (Guild Created At)        #
+#     {TotalChannels} (Total Channel Size)  #
+#     {TextChannelSize}                     #
+#     {VoiceChannelSize}                    #
+#     {CategorySize}                        #
+#     {TotalMembers}                        #
+#     {TotalUsers} (Excludes Bots)          #
+#     {TotalBots}                           #
+#     {ServerName} (As set in the config)   #
+#     {ServerColor} (As set in the config)  #
+#     {TimeStamp}                           #
+#############################################
+
+########################################
+#                                      #
+#       Important Configuration        #
+#                                      #
+########################################
+LicenseKey: ""
+Token: ODY0MjQ0NDg0ODUzMzM0MDU5.YOyoZg.qjz71XqOQTM5VZ9eO6FiHHSBgWI
+MongoDBURL: mongodb+srv://Astro:VcGRdclAKV42KbNz@cluster0.mejke.mongodb.net/LicenseTest?retryWrites=true&w=majority
+Prefix:
+  - "."
+  - "-"
+  - "`"
+  - "="
+  - "?"
+
+########################################
+#                                      #
+#        General Configuration         #
+#                                      #
+########################################
+ServerName: Astro Tech
+ServerColor: 33D458
+GuildID: "864243948867158046"
+ActivityRefreshRate: 10000
+Activities:
+  WatchingAstro:
+    Type: WATCHING
+    Content: Astro
+  PlayingWarzone:
+    Type: PLAYING
+    Content: WARZONE
+
+ExampleEmbed:
+  Title: ""
+  Color: ""
+  Description: ""
+  Fields:
+    Random1:
+      Name: ""
+      Value: ""
+      Inline: true 
+    Random2:
+      Name: ""
+      Value: ""
+      Inline: true 
+  Image: ""
+  Thumbnail: ""
+  Footer: "{ServerName} • {TimeStamp}"
+
+########################################
+#                                      #
+#        Ticket Configuration          #
+#                                      #
+########################################
+TicketsEnabled: true
+TicketChannelID: "882695643531976714"
+TicketMessageID: "883163456453378109"
+TicketButton:
+  Label: Create Ticket!
+  Style: PRIMARY
+TicketQuestionTimeout: 30000
+########################################
+#   Incomplete Ticket Configuration    #
+########################################
+IncompleteTickets:
+  ParentID: "882904096342937601"
+  AllowedPermissions: ["VIEW_CHANNEL", "ATTACH_FILES"]
+  DeniedPermissions: ["SEND_MESSAGES"]
+
+########################################
+#    Ticket Category Configuration     #
+########################################
+TicketDropDownMenu:
+  PlaceHolder: "Please select a ticket category."
+  Timeout: 30000
+TicketCategories:
+  GeneralSupport:
+    Name: "General Support"
+    Description: "General Help and Support"
+    Emoji: "😀"
+    ParentID: "883071447524847646"
+    StaffIDs:
+      - "866055108399595560"
+      - "866055150618411058"
+    RequiredToOpenRoleIDs:
+      - "866111785148743710"
+    Questions:
+      - "What is your in game name?"
+      - "Additional:Applications"
+      - "How could our support team help you?"
+########################################
+#     Ticket Category Additionals      #
+########################################
+TicketAdditionals:
+  Applications:
+    TrialMod:
+      Name: "Trial-Moderator"
+      Description: "Trial Moderator Applications"
+      Emoji: "🔥"
+      Questions:
+        - "Trial Mod Questions 1"
+        - "Trial Mod Questions 2"
+    Moderator:
+      Name: "Moderator"
+      Description: "Moderator Applications"
+      Emoji: "💥"
+      Questions:
+        - "Mod Questions 1"
+        - "Mod Questions 1"
+    Administrator:
+      Name: "Administrator"
+      Description: "Administrator Applications"
+      Emoji: "✨"
+      Questions:
+        - "Admin Questions 1"
+        - "Admin Mod Questions 1"
+        - "Additional:Applications"
+########################################
+#            Ticket Embeds             #
+########################################
+TicketEmbeds:
+  CreateTicket:
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "Click the button below to create a ticket."
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  TicketCreatedReply: #{TicketChannel}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "You have created your ticket! \n\nPlease answer the automated questions in {TicketChannel}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  AlreadyHaveTicket: #{TicketCategory}, {TicketChannel}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "You already have a **{TicketCategory}** Ticket!\nPlease refer to {TicketChannel} for support."
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  CategorySelectEmbed:
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "Please select the category that relates most to your issue.\n\n*Warning: Selecting the wrong category will extend your wait time*"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  TicketTimedOut: #{CreateTicketChannel}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "Your ticket has timed out. \nIf you are still seeking support, Please create another here: {CreateTicketChannel}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  SelectedCategoryReply: #{TicketCategory}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "You have selected the **{TicketCategory}** Category. Please answer the questions below."
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  AutomatedQuestionMessage: #{Question}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "{Question}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  TicketEmbedRunOff: #{Count}, {Description}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "**__Description Run Off:__**\n\nDescription {Count}:\n{Description}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  TicketCategoryNoPermission: #{TicketCategory}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "**You do not have permission to create a {TicketCategory} Ticket!**"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  FinalTicketEmbed: #{AutomatedQuestions}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "{AutomatedQuestions}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+
+########################################
+#                                      #
+#     Verification Configuration       #
+#                                      #
+########################################
+
+VerificationEnabled: true
+VerificationRequireCaptcha: true
+VerificationChannelID: "883873120610549800" 
+VerificationMessageID: "884838694320762901"
+
+VerificationButton:
+  Label: Verify!
+  Style: PRIMARY
+
+VerifiedRoleIDS: 
+  - "866111750994395136"
+  - "866111785148743710"
+VerificationTimeoutTime: 15000
+########################################
+#          Verifiation Embeds          #
+########################################
+VerificationEmbeds:
+  Verify:
+    Title: "{ServerName} Verification"
+    Color: "{ServerColor}"
+    Description: "**__Click the button to be verified__**\n\n:no_entry: **WARNING** :no_entry:\nYou must have your DM'S open"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  DmsClosed:
+    Title: "{ServerName} Verification"
+    Color: "{ServerColor}"
+    Description: "**__Unable to send Captcha__**\n\nPlease enable your DMS to be verified."
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  CreatedVerificationCaptcha:
+    Title: "{ServerName} Verification"
+    Color: "{ServerColor}"
+    Description: "**__You have been sent a captcha in your DMS.__**\n\nPlease complete it if you would like to gain access to {ServerName}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  Captcha:
+    Title: "{ServerName} Verification"
+    Color: "{ServerColor}"
+    Description: "You have 15 seconds to complete the captcha."
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  CaptchaTimeout:
+    Title: "{ServerName} Verification"
+    Color: "{ServerColor}"
+    Description: "Your captcha has timed out."
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  CaptchaSuccess:
+    Title: "{ServerName} Verification"
+    Color: "{ServerColor}"
+    Description: "You have been verified!"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  CaptchaFail:
+    Title: "{ServerName} Verification"
+    Color: "{ServerColor}"
+    Description: "You have failed the captcha!"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  NoCaptchaVerified:
+    Title: "{ServerName} Verification"
+    Color: "{ServerColor}"
+    Description: "You have been verified!"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+
+########################################
+#                                      #
+#        Welcome Configuration         #
+#                                      #
+########################################
+WelcomeEnabled: true
+WelcomeChannelID: "885797631580848149"
+WelcomeEmbedEnabled: false
+WelcomeEmbed:
+    Title: "Welcome {Username} to {ServerName}!"
+    Color: "{ServerColor}"
+    Description: "Welcome to the {ServerName} Official Discord!"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+
+########################################
+#                                      #
+#       Statistics Configuration       #
+#                                      #
+########################################
+# Add as many as you want (Use default Embed Placeholders)
+Statistics:
+  TotalMembers:
+    ChannelID: "886117427983843368"
+    Format: "Total Members: {TotalMembers}"
+  TotalBots:
+    ChannelID: "886117669785444382"
+    Format: "Total Bots: {TotalBots}"
