@@ -34,7 +34,7 @@ module.exports.Status = (bot) => {
     setInterval(() => {
         let ActivityObject = Object.values(config.Activities)
         let Activity = ActivityObject[ActivityNumber]
-        bot.user.setActivity({ type: Activity.Type, name: Activity.Content })
+        bot.user.setActivity({ type: Activity.Type, name: exports.Placeholders(bot, Activity.Content, null, null) })
 
         if(ActivityNumber == ActivityLength - 1) return ActivityNumber = 1
 

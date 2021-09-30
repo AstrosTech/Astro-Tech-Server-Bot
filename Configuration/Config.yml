@@ -79,10 +79,7 @@ ActivityRefreshRate: 10000
 Activities:
   WatchingAstro:
     Type: WATCHING
-    Content: Astro
-  PlayingWarzone:
-    Type: PLAYING
-    Content: WARZONE
+    Content: "{TotalMembers} Members"
 BlockCommandsChannelIDS: # Will block commands from being ran in these channels until
   - "892427501865934859"
   - "892300499502661652"
