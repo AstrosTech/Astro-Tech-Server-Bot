@@ -33,7 +33,9 @@
 #     {Username}                            #
 #     {CreatedOn}                           #
 #     {UserDiscriminator}                   #
-#                                           #
+#     {UserPing}                            #
+#     {AvatarURL}                           #
+#############################################
 #     General Placeholders:                 #
 #     {GuildID}                             #
 #     {Security} (Verification level)       #
@@ -57,7 +59,7 @@
 ########################################
 LicenseKey: ""
 Token: ODY0MjQ0NDg0ODUzMzM0MDU5.YOyoZg.qjz71XqOQTM5VZ9eO6FiHHSBgWI
-MongoDBURL: mongodb+srv://Astro:VcGRdclAKV42KbNz@cluster0.mejke.mongodb.net/LicenseTest?retryWrites=true&w=majority
+MongoDBURL: mongodb+srv://Astro:VcGRdclAKV42KbNz@cluster0.mejke.mongodb.net/AstroTech?retryWrites=true&w=majority
 Prefix:
   - "."
   - "-"
@@ -71,7 +73,7 @@ Prefix:
 #                                      #
 ########################################
 ServerName: Astro Tech
-ServerColor: 33D458
+ServerColor: 5865f2
 GuildID: "864243948867158046"
 ActivityRefreshRate: 10000
 Activities:
@@ -81,11 +83,61 @@ Activities:
   PlayingWarzone:
     Type: PLAYING
     Content: WARZONE
+BlockCommandsChannelIDS: # Will block commands from being ran in these channels until
+  - "892427501865934859"
+  - "892300499502661652"
 
+GeneralEmbeds:
+  InsufficientUsage: #{Command}, {Description}, {Usage}, {Aliases}
+    Title: "Insufficient Usage!"
+    Color: "{ServerColor}"
+    Description: "**Command:** {Command}\n\n**Description:** {Description}\n**Usage:** {Usage}\n**Aliases:** {Aliases}\n"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  InsufficientPermission: #{Command}, {Permissions}, {Description}, {Usage}, {Aliases}
+    Title: "Insufficient Permission!"
+    Color: "{ServerColor}"
+    Description: "**Command:** {Command}\n\n**Description:** {Description}\n**Usage:** {Usage}\n**Aliases:** {Aliases}\n**Permissions:**\n{Permissions}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  CommandInfo: #{Command}, {Permissions}, {Description}, {Usage}, {Aliases}
+    Title: "{ServerName} Command Information"
+    Color: "{ServerColor}"
+    Description: "**Command:** {Command}\n\n**Description:** {Description}\n**Usage:** {Usage}\n**Aliases:** {Aliases}\n**Permissions:**\n{Permissions}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  Errors: #{Error}
+    Title: ":warning: Error! :warning:"
+    Color: "{ServerColor}"
+    Description: "__**A warning has occured!**__\n\n{Error}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  OnCooldown:
+    Title: ":warning: Error! :warning:"
+    Color: "{ServerColor}"
+    Description: "You are still on cooldown for {Command}.\n\nPlease wait: {Cooldown}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  FrontPageHelp:
+    Title: "{ServerName} Help Menu"
+    Color: "{ServerColor}"
+    Description: "Select the category that corresponds with your command help needs!"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+########################################
+#           Example Embed              #
+########################################  
 ExampleEmbed:
   Title: ""
   Color: ""
   Description: ""
+  Author: ""
   Fields:
     Random1:
       Name: ""
@@ -107,6 +159,7 @@ ExampleEmbed:
 TicketsEnabled: true
 TicketChannelID: "882695643531976714"
 TicketMessageID: "883163456453378109"
+TicketLogChannelID: "890507314476494929"
 TicketButton:
   Label: Create Ticket!
   Style: PRIMARY
@@ -167,6 +220,7 @@ TicketAdditionals:
         - "Admin Questions 1"
         - "Admin Mod Questions 1"
         - "Additional:Applications"
+
 ########################################
 #            Ticket Embeds             #
 ########################################
@@ -185,10 +239,24 @@ TicketEmbeds:
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
+  TicketBanned: #{TicketBannedDate}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "**You may not create a ticket**\n\nYou have been ticket banned since: \n{TicketBannedDate}."
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
   AlreadyHaveTicket: #{TicketCategory}, {TicketChannel}
     Title: "{ServerName} Tickets"
     Color: "{ServerColor}"
     Description: "You already have a **{TicketCategory}** Ticket!\nPlease refer to {TicketChannel} for support."
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  NoMoreCategories:
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "You already have a ticket in every category. Please refer to your open tickets."
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
@@ -241,7 +309,55 @@ TicketEmbeds:
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
-
+  NotATicketChannel: #{Command}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "{Command} may only be ran in a ticket channel."
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  ClosedTicket: #{TicketChannel}, {Reason}, {LastFiveMessages}, {TicketCreatorPing}, {TicketUserTag}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "Ticket {TicketChannel} has been closed!\n\n**Ticket Creator:** {TicketCreatorPing} ( {TicketUserTag} )\n**Closed By:** {UserPing} ( {Username}#{UserDiscriminator} )\n**Reason:** {Reason}\n\n**Last Five Messages:**\n```\n{LastFiveMessages}\n```"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  PrivatizedTicket: #{TicketChannel}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "{TicketChannel} has been successfully privatized!"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  SuccessfullyAdded: #{Added}, {TicketChannel}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "{Added} has been successfully added to {TicketChannel}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  SuccessfullyRemoved: #{Removed}, {TicketChannel}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "{Removed} has been successfully removed from {TicketChannel}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  SuccessfulTicketBan: #{TicketBanned}, {BannedBy}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "{TicketBanned} has been successfully ticket banned by {BannedBy}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  SuccessfulTicketUnBan: #{TicketUnBanned}, {UnBannedBy}
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "{TicketBanned} has been successfully ticket Unbanned by {BannedBy}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
 ########################################
 #                                      #
 #     Verification Configuration       #
@@ -351,3 +467,172 @@ Statistics:
   TotalBots:
     ChannelID: "886117669785444382"
     Format: "Total Bots: {TotalBots}"
+
+
+########################################
+#                                      #
+#       Suggestion Configuration       #
+#                                      #
+########################################
+SuggestionCategories: 
+  - "Tacos"
+  - "JackFrost"
+
+SuggestionChannelIDS:
+  Approved: "892287171074068482"
+  Denied: "892300499502661652"
+  Pending: "892137934025818162"
+
+SuggestionCreateChannel:
+  Enabled: true
+  SuggestChannelID: "892325854699479050"
+
+SuggestionEmbeds:
+  SuggestionRulesEmbed: # {PendingChannel}, {ApprovedChannel}, {DeniedChannel}
+    Title: "{ServerName} Suggestions"
+    Color: "{ServerColor}"
+    Description: "You can create suggestions with -suggest <category> <suggestion>\n\nYour suggestion will then be put in {PendingChannel} where other players can vote on it.\n\n**__Suggestion Rules__**\n```yml\n- No suggestions regarding a Staff member's position\n- Repeat suggestions will not expedite the process\n- No useless suggestions\n- Once a decision has been made, it cannot be overturned. Re-suggesting issues will not reverse the outcome.\n```"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  InvalidCategory: # {Categories}
+    Title: "{ServerName} Suggestions"
+    Color: "{ServerColor}"
+    Description: "You have provided a invalid suggestion category. \n\nCategories:\n{Categories}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  InvalidSuggestionID: #{SuggestionID}
+    Title: "{ServerName} Suggestions"
+    Color: "{ServerColor}"
+    Description: "You have provided an invalid Suggestion ID ( Message ID )"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  PendingSuggestion: # {Suggestion}, {Category}
+    Title: ""
+    Color: "{ServerColor}"
+    Author: "Sent by: {Username}#{UserDiscriminator}"
+    Description: "**Suggestion:**\n{Suggestion}"
+    Image: ""
+    Thumbnail: "{AvatarURL}"
+    Footer: "Category: {Category} • {TimeStamp}"
+  ApprovedSuggestion: # {Suggestion}, {Category}, {Upvotes}, {Downvotes}, {SuggestorAvatarURL}, {SuggestionAuthor}, {Reason}
+    Title: ""
+    Color: "{ServerColor}"
+    Author: "{SuggestionAuthor}"
+    Description: "**Suggestion:**\n{Suggestion}"
+    Fields:
+      Votes:
+        Name: "Votes"
+        Value: "👍 {Upvotes} | 👎 {Downvotes}"
+      ApprovedBy: 
+        Name: "Suggestion Approved By: {Username}#{UserDiscriminator}"
+        Value: "{Reason}"
+    Image: ""
+    Thumbnail: "{SuggestorAvatarURL}"
+    Footer: "Category: {Category} • {TimeStamp}"
+  DeniedSuggestion: # {Suggestion}, {Category}, {Upvotes}, {Downvotes}, {SuggestorAvatarURL}, {SuggestionAuthor}, {Reason}
+    Title: ""
+    Color: "{ServerColor}"
+    Author: "{SuggestionAuthor}"
+    Description: "**Suggestion:**\n{Suggestion}"
+    Fields:
+      Votes:
+        Name: "Votes"
+        Value: "👍 {Upvotes} | 👎 {Downvotes}"
+      DeniedBy: 
+        Name: "Suggestion Denied By: {Username}#{UserDiscriminator}"
+        Value: "{Reason}"
+    Image: ""
+    Thumbnail: "{SuggestorAvatarURL}"
+    Footer: "Category: {Category} • {TimeStamp}"
+  SuccessfulSuggestion: # {PendingChannel}, {Suggestion}
+    Title: "{ServerName} Suggestions"
+    Color: "{ServerColor}"
+    Description: "Your suggestion has been taken. \n\nYou may view your suggestion in {PendingChannel}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  SuccessfulApproved: # {PendingChannel}, {Suggestion}, {ApprovedChannel}
+    Title: "{ServerName} Suggestions"
+    Color: "{ServerColor}"
+    Description: "The suggestion has been approved. \n\nYou may view the suggestion in {ApprovedChannel}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  SuccessfulDenied: # {PendingChannel}, {Suggestion}, {DeniedChannel}
+    Title: "{ServerName} Suggestions"
+    Color: "{ServerColor}"
+    Description: "The suggestion has been denied. \n\nYou may view the suggestion in {DeniedChannel}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  OnlySuggestionChannel: # {PendingChannel}
+    Title: "{ServerName} Suggestions"
+    Color: "{ServerColor}"
+    Description: "You may only make suggestions in {PendingChannel}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+
+########################################
+#                                      #
+#         Logs Configuration           #
+#                                      #
+########################################
+Logs:
+  MessageDelete: #{Channel}, {Content}
+    ChannelID: "892648766857961502"
+    Embed:
+      Title: "{ServerName} Logs"
+      Color: "{ServerColor}"
+      Description: "**__Message Deleted__**\n\n**Author:** {UserPing} ({Username}#{UserDiscriminator})\n**Channel: {Channel}**\n**Content:**\n{Content}"
+      Image: ""
+      Thumbnail: "{AvatarURL}"
+      Footer: "{ServerName} • {TimeStamp}"
+  MessageUpdate: # {Link}, {Content}, {NewMessage}, {OldMessage}
+    ChannelID: "892656728888471582"
+    Embed:
+      Title: "{ServerName} Logs"
+      Color: "{ServerColor}"
+      Description: "**__Message Edited__**\n\n**Author:** {UserPing} ({Username}#{UserDiscriminator})\n**Channel: {Channel} [Jump to Message]({Link})**\n**Old Message:**\n{OldMessage}\n**New Message:**\n{NewMessage}"
+      Image: ""
+      Thumbnail: "{AvatarURL}"
+      Footer: "{ServerName} • {TimeStamp}"
+  RoleCreate: # {RoleName}, {RoleID}, {RoleColor}, {RolePosition}, {RoleTag}
+    ChannelID: "892658327497113611"
+    Embed:
+      Title: "{ServerName} Logs"
+      Color: "{ServerColor}"
+      Description: "**__Role Created__**\n\n**Role:** {RoleTag} ({RoleID})\n**Color: {RoleColor}**\n**Position:** {RolePosition}"
+      Image: ""
+      Thumbnail: ""
+      Footer: "{ServerName} • {TimeStamp}"
+  RoleDelete: # {RoleName}, {RoleID}, {RoleColor}, {RolePosition}
+    ChannelID: "892663075419852850"
+    Embed:
+      Title: "{ServerName} Logs"
+      Color: "{ServerColor}"
+      Description: "**__Role Deleted__**\n\n**Role:** {RoleName} ({RoleID})\n**Color: {RoleColor}**\n**Position:** {RolePosition}"
+      Image: ""
+      Thumbnail: ""
+      Footer: "{ServerName} • {TimeStamp}"
+  MemberJoin: # {CreatedAt}
+    ChannelID: "892792126952329226"
+    Embed:
+      Title: "{ServerName} Logs"
+      Color: "{ServerColor}"
+      Description: "**__Member Joined__**\n\n**Member:** {UserPing} ({Username}#{UserDiscriminator})\n**Created At: {CreatedAt}**"
+      Image: ""
+      Thumbnail: ""
+      Footer: "{ServerName} • {TimeStamp}"
+  MemberLeave: # {CreatedAt}, {JoinedAt}
+    ChannelID: "892792126952329226"
+    Embed:
+      Title: "{ServerName} Logs"
+      Color: "{ServerColor}"
+      Description: "**__Member Left__**\n\n**Member:** ({Username}#{UserDiscriminator})\n**ID:** {UserID}\n**Created At: {CreatedAt}\nJoined At: {JoinedAt}**"
+      Image: ""
+      Thumbnail: ""
+      Footer: "{ServerName} • {TimeStamp}"

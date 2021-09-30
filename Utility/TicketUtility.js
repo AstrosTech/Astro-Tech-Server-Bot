@@ -26,7 +26,13 @@ module.exports.CreateTicketChannel = async (bot, interaction) => {
     return TicketChannel
 }
 
-module.exports.AlreadyHasTicket = (bot, Category, Channel, interaction) => {
+module.exports.AlreadyHasTicket = async (bot, Category, Channel, interaction, User, TicketChannel) => {
+    if(!interaction && User && TicketChannel) {
+        await User.send({ embeds: [ functions.EmbedGenerator(bot, config.TicketEmbeds.NoMoreCategories, null, User) ]}).catch(err => { return })
+
+        await TicketChannel.delete().catch(err => { return })
+        return
+    }
     interaction.reply({ embeds: [ functions.EmbedGenerator(bot, config.TicketEmbeds.AlreadyHaveTicket, [`{TicketCategory}:${Category}`, `{TicketChannel}:${Channel.toString()}`]) ], ephemeral: true })
 }
 
@@ -59,6 +65,9 @@ module.exports.TicketCategorySelection = async (bot, TicketChannel, User) => {
         let TicketCategoryName = Object.keys(config.TicketCategories)[i];
         let TicketCategory = config.TicketCategories[TicketCategoryName];
         
+        let AlreadyTicketCheck = TicketChannel.guild.channels.cache.find(channel => channel.topic === `${User.id}-${TicketCategory.ParentID}`)
+        if(AlreadyTicketCheck) continue;
+
         DropDownMenu.addOptions([
             {
                 label: TicketCategory.Name,
@@ -68,6 +77,9 @@ module.exports.TicketCategorySelection = async (bot, TicketChannel, User) => {
             }
         ])
     }
+
+    if(DropDownMenu.options.length < 1) return exports.AlreadyHasTicket(bot, "All", TicketChannel, null, User, TicketChannel)
+
     row.addComponents(DropDownMenu)
     let MenuMessage = await TicketChannel.send({embeds:[functions.EmbedGenerator(bot, config.TicketEmbeds.CategorySelectEmbed, null)], components: [row]})
     
@@ -77,9 +89,11 @@ module.exports.TicketCategorySelection = async (bot, TicketChannel, User) => {
 
     if(!config.TicketCategories[MenuResponse.values[0]].RequiredToOpenRoleIDs.some(role => bot.guilds.cache.get(config.GuildID).members.cache.find(member => member.id == User.id).roles.cache.find(roleid => roleid.id === role))) return exports.TicketCategoryNoPermission(bot, User, TicketChannel, config.TicketCategories[MenuResponse.values[0]].Name)
 
-    await MenuMessage.delete().catch(err => { return })
     await MenuResponse.reply({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SelectedCategoryReply, [`{TicketCategory}:${config.TicketCategories[MenuResponse.values[0]].Name}`])] })
-    setTimeout(() => { MenuResponse.deleteReply().catch(err => { return }) }, 3000);
+
+
+    await TicketChannel.setTopic(`${User.id}-${config.TicketCategories[MenuResponse.values[0]].ParentID}`)
+    await TicketChannel.setParent(config.TicketCategories[MenuResponse.values[0]].ParentID, { lockPermissions: false })
     return MenuResponse.values[0]
 }
 
@@ -99,6 +113,7 @@ module.exports.AutomatedTicketQuestions = async (bot, TicketCategory, TicketChan
             let AdditionalName = TicketQuestion.split(":")[1]
             let SelectedAdditional = await exports.TicketAdditionalsCategorySelect(bot, AdditionalName, TicketChannel, User)
             
+
             UserResponses.push(`**__${SelectedAdditional}__**`)
             let AdditionalResponses = await exports.TicketAdditionalsAutomatedQuestions(bot, config.TicketAdditionals[AdditionalName][SelectedAdditional], TicketChannel, User)
             UserResponses = UserResponses.concat(AdditionalResponses.UserResponses)
@@ -126,9 +141,6 @@ module.exports.AutomatedTicketQuestions = async (bot, TicketCategory, TicketChan
             }
 
             UserResponses.push(`**${TicketQuestion}**\n\`\`\`${QuestionResponse}\`\`\``)
-
-            await QuestionMessage.delete().catch(err => { return })
-            await QuestionResponse.delete().catch(err => { return })
         }
     }
     
@@ -148,6 +160,7 @@ module.exports.TicketTimedOut = async (bot, User, TicketChannel) => {
     let CreateTicketChannel = bot.guilds.cache.get(config.GuildID).channels.cache.find(channel => channel.id == config.TicketChannelID)
     await TicketChannel.delete().catch(err => { return })
     await User.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.TicketTimedOut, [`{CreateTicketChannel}:${CreateTicketChannel.toString()}`])] }).catch(err => { return })
+    return
 }
 
 module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketChannel, User) => {
@@ -172,17 +185,17 @@ module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketC
         ])
     }
 
+        if(DropDownMenu.options.length < 1) return exports.AlreadyHasTicket(bot, "All", TicketChannel, null, User, TicketChannel)
+        
         row.addComponents(DropDownMenu)
         let MenuMessage = await TicketChannel.send({embeds:[functions.EmbedGenerator(bot, config.TicketEmbeds.CategorySelectEmbed, null)], components: [row]})
 
         let MenuFilter = (interaction) => { interaction.user.id === TicketChannel.topic; return row }
 
-        let MenuResponse = await MenuMessage.awaitMessageComponent({MenuFilter, max: 1, time: config.TicketDropDownMenu.Timeout}).catch(err => { return })
+        let MenuResponse = await MenuMessage.awaitMessageComponent({ MenuFilter, max: 1, time: config.TicketDropDownMenu.Timeout }).catch(err => { return })
         if(!MenuResponse) return exports.TicketTimedOut(bot, User, TicketChannel)
 
-        await MenuMessage.delete().catch(err => { return })
         await MenuResponse.reply({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SelectedCategoryReply, [`{TicketCategory}:${config.TicketAdditionals[Additional][MenuResponse.values[0]].Name}`])] })
-        setTimeout(() => { MenuResponse.deleteReply().catch(err => { return }) }, 3000);
 
         await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: true });
         return MenuResponse.values[0]
@@ -227,8 +240,6 @@ module.exports.TicketAdditionalsAutomatedQuestions = async (bot, TicketCategory,
 
             UserResponses.push(`**${TicketQuestion}**\n\`\`\`${QuestionResponse}\`\`\``)
 
-            await QuestionMessage.delete().catch(err => { return })
-            await QuestionResponse.delete().catch(err => { return })
         }
     }
     return { UserResponses, UserImages }

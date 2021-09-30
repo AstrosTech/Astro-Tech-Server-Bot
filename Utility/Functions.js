@@ -11,12 +11,13 @@ module.exports.Start = (bot) => {
         console.log(chalk.bold(chalk.cyan("[Astro Tech] ") + "»" + chalk.white(" GuildID set incorrectly in the configuration. Bot turning off...")))
         process.exit()
     }
-    figlet.text("Astro Tech", function (err, data) { if(err) console.trace(err); console.log(chalk.bold(chalk.blueBright(data) + chalk.white(`\nBot Information`) + chalk.white(`\n\u2003\u2003\u2003Username: `) + chalk.green(`${bot.user.username}`) + chalk.white(`\n\u2003\u2003\u2003ID: `) + chalk.green(`${bot.user.id}`) + chalk.white(`\n\u2003\u2003\u2003Guilds: `) + chalk.green(`${bot.guilds.cache.map(guild => guild.name).join(", ")}`))) })
+    figlet.text("Astro Tech", function (err, data) { if(err) console.trace(err); console.log(chalk.bold(chalk.blueBright(data) + chalk.white(`\nBot Information:`) + chalk.white(`\n\u2003\u2003\u2003Username: `) + chalk.green(`${bot.user.username}`) + chalk.white(`\n\u2003\u2003\u2003ID: `) + chalk.green(`${bot.user.id}`) + chalk.white(`\n\u2003\u2003\u2003Guilds: `) + chalk.green(`${bot.guilds.cache.map(guild => guild.name).join(", ")}`) + chalk.white(`\n\u2003\u2003\u2003Start Time: `) + chalk.green(`${moment().tz('America/New_York').format("dddd, MMMM Do, h:mm a")} EST`))) })
 
     exports.SetupTickets(bot, Guild)
     exports.SetupVerification(bot, Guild)
     exports.Status(bot)
     exports.Statistics(bot, Guild)
+    exports.SetupSuggestions(bot, Guild)
 }
 
 module.exports.Status = (bot) => {
@@ -75,6 +76,30 @@ module.exports.SetupVerification = async (bot, Guild) => {
     }
 }
 
+SuggestionMessageID = null;
+module.exports.SetupSuggestions = async (bot, Guild) => {
+    if(config.SuggestionCreateChannel.Enabled != true) return;
+
+    let SuggestionChannel = Guild.channels.cache.find(channel => channel.id == config.SuggestionCreateChannel.SuggestChannelID)
+    if(!SuggestionChannel) return exports.LogToConsole('SuggestionCreateChannel.SuggestChannelID set incorrectly in the configuration. Suggestions may not be made.')
+
+    await SuggestionChannel.bulkDelete(100).catch(err => { return })
+
+    let PendingChannel = Guild.channels.cache.find(channel => channel.id == config.SuggestionChannelIDS.Pending)
+    if(!PendingChannel) exports.LogToConsole('SuggestionChannelIDS.Pending set incorrectly in the configuration. Suggestions may not be made.')
+
+    let ApprovedChannel = Guild.channels.cache.find(channel => channel.id == config.SuggestionChannelIDS.Pending)
+    if(!ApprovedChannel) exports.LogToConsole('SuggestionChannelIDS.Pending set incorrectly in the configuration. Cannot approve suggestions')
+
+    let DeniedChannel = Guild.channels.cache.find(channel => channel.id == config.SuggestionChannelIDS.Pending)
+    if(!DeniedChannel) exports.LogToConsole('SuggestionChannelIDS.Pending set incorrectly in the configuration. Cannot deny suggestions')
+
+    let SuggestionMessage = await SuggestionChannel.send({ embeds: [exports.EmbedGenerator(bot, config.SuggestionEmbeds.SuggestionRulesEmbed, [`{PendingChannel}:${PendingChannel.toString()}`, `{ApprovedChannel}:${ApprovedChannel.toString()}`, `{DeniedChannel}:${DeniedChannel.toString()}`])] })
+    SuggestionMessageID = SuggestionMessage.id
+}
+
+module.exports.getSuggestionMessageID = () => { return SuggestionMessageID }
+
 module.exports.LogToConsole = (log) => {
     console.log(chalk.bold(chalk.cyan("[Astro Tech] » ") + chalk.white(log)))
 }
@@ -87,7 +112,9 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
         for (let i = 0; i < placeholders.length; i++) {
             let Placeholder = placeholders[i]
 
-            let SplitPlaceholders = Placeholder.split(":")
+            let SplitPlaceholders;
+            if(Placeholder.includes('--')) SplitPlaceholders = Placeholder.split('--');
+            else SplitPlaceholders = Placeholder.split(":")
             ReplacedMessage = ReplacedMessage.replace(SplitPlaceholders[0], SplitPlaceholders[1])
         }
     }
@@ -97,6 +124,8 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
         .replace("{Username}", user.username)
         .replace("{CreatedOn}", moment(user.createdAt).format('llll'))
         .replace("{UserDiscriminator}", user.discriminator)
+        .replace("{UserPing}", user.toString())
+        .replace("{AvatarURL}", user.avatarURL())
     }
     let Guild = bot.guilds.cache.get(config.GuildID)
     
@@ -119,14 +148,14 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
 }
 
 
-module.exports.EmbedGenerator = (bot, EmbedInformation, Placeholders, User) => {
+module.exports.EmbedGenerator = (bot, EmbedInformation, Placeholders, User, AvatarURL) => {
         let Embed = new Discord.MessageEmbed()
     
-        if(EmbedInformation.Title.length > 0) Embed.setTitle(exports.Placeholders(bot, EmbedInformation.Title, User, Placeholders))
-        if(EmbedInformation.Color.length > 0) Embed.setColor(exports.Placeholders(bot, EmbedInformation.Color, User))
-        if(EmbedInformation.Thumbnail.length > 0) Embed.setThumbnail(EmbedInformation.Thumbnail)
+        if(EmbedInformation.Title && EmbedInformation.Title.length > 0) Embed.setTitle(exports.Placeholders(bot, EmbedInformation.Title, User, Placeholders))
+        if(EmbedInformation.Color && EmbedInformation.Color.length > 0) Embed.setColor(exports.Placeholders(bot, EmbedInformation.Color, User))
+        if(EmbedInformation.Thumbnail && EmbedInformation.Thumbnail.length > 0) Embed.setThumbnail(exports.Placeholders(bot, EmbedInformation.Thumbnail, User, Placeholders))
 
-        if(EmbedInformation.Description.length > 0) Embed.setDescription(exports.Placeholders(bot, EmbedInformation.Description, User, Placeholders))
+        if(EmbedInformation.Description && EmbedInformation.Description.length > 0) Embed.setDescription(exports.Placeholders(bot, EmbedInformation.Description, User, Placeholders))
         
         if(EmbedInformation.Fields != null) {
             if(Object.keys(EmbedInformation.Fields).length > 0) { 
@@ -136,8 +165,15 @@ module.exports.EmbedGenerator = (bot, EmbedInformation, Placeholders, User) => {
             }
         }
 
-        if(EmbedInformation.Image.length > 0) Embed.setImage(exports.Placeholders(bot, EmbedInformation.Image, User, Placeholders))
-        if(EmbedInformation.Footer.length > 0) Embed.setFooter(exports.Placeholders(bot, EmbedInformation.Footer, User, Placeholders))
+        let UsersAvatar;
+        
+        if(User) UsersAvatar = User.avatarURL()
+        else UsersAvatar = AvatarURL
+
+        if(EmbedInformation.Author && EmbedInformation.Author.length > 0) Embed.setAuthor(exports.Placeholders(bot, EmbedInformation.Author, User, Placeholders), UsersAvatar)
+
+        if(EmbedInformation.Image && EmbedInformation.Image.length > 0) Embed.setImage(exports.Placeholders(bot, EmbedInformation.Image, User, Placeholders))
+        if(EmbedInformation.Footer && EmbedInformation.Footer.length > 0) Embed.setFooter(exports.Placeholders(bot, EmbedInformation.Footer, User, Placeholders))
         
         return Embed
 }
@@ -153,4 +189,79 @@ module.exports.Statistics = async (bot, Guild) => {
     }
 }
 
+module.exports.VerifyPermissions = async (Permissions, Member) => {
 
+    if(!Permissions) return false;
+    
+    if(Permissions.some(AllowedRole => Member.roles.cache.find(userrole => userrole.id === AllowedRole))) return true;
+
+    if(Permissions.some(AllowedUsers => Member.user.id == AllowedUsers)) return true;
+
+
+    let MemberPermissions = Member.permissions.serialize();
+    if(Permissions.some(AllowedPermissions => MemberPermissions[AllowedPermissions])) return true;
+
+    return false;
+}
+
+
+module.exports.InsufficientPermissions = async (bot, Guild, Help, User, Channel) => {
+    let Permissions = []
+
+    for(Permission of Help.permissions) {
+        
+        let RoleCheck = await Guild.roles.cache.find(role => role.id === Permission)
+        if(RoleCheck) {
+            Permissions.push(RoleCheck.toString())
+            continue;
+        }
+
+        let MemberCheck = await Guild.members.cache.get(Permission)
+        if(MemberCheck) {
+            Permissions.push(MemberCheck.toString())
+            continue;
+        }
+        Permissions.push(Permission)
+    }
+    
+    if(Help.usage.length > 1) Help.usage = "No Usage Provided."
+    if(Help.description.length > 1) Help.description = "No Description Provided"
+    if(!Help.aliases[0]) Help.aliases = "No aliases"
+    if(Permissions.length > 1) Permissions = "No Permissions Provided"
+    
+    Channel.send({ embeds: [exports.EmbedGenerator(bot, config.GeneralEmbeds.InsufficientPermission, [`{Command}:${Help.name}`, `{Description}:${Help.description}`, `{Usage}:${Help.usage}`, `{Aliases}:${Help.aliases}`, `{Permissions}:${Permissions}`], User)] })
+}
+
+module.exports.InsufficientUsage = async (bot, Guild, Help, User, Channel) => {
+    if(Help.usage.length < 1) Help.usage = "No Usage Provided."
+    if(Help.description.length < 1) Help.description = "No Description Provided"
+    if(!Help.aliases[0]) Help.aliases = "No aliases"
+    
+    Channel.send({ embeds: [exports.EmbedGenerator(bot, config.GeneralEmbeds.InsufficientUsage, [`{Command}:${Help.name}`, `{Description}:${Help.description}`, `{Usage}:${Help.usage}`, `{Aliases}:${Help.aliases}`], User)] })
+}
+
+module.exports.CommandInfo = async (bot, Guild, Help, User, Channel) => {
+    if(Help.usage.length < 1) Help.usage = "No Usage Provided."
+    if(Help.description.length < 1) Help.description = "No Description Provided"
+    if(!Help.aliases[0]) Help.aliases = "No aliases"
+    
+    let Permissions = []
+
+    for(Permission of Help.permissions) {
+        
+        let RoleCheck = await Guild.roles.cache.find(role => role.id === Permission)
+        if(RoleCheck) {
+            Permissions.push(RoleCheck.toString())
+            continue;
+        }
+
+        let MemberCheck = await Guild.members.cache.get(Permission)
+        if(MemberCheck) {
+            Permissions.push(MemberCheck.toString())
+            continue;
+        }
+        Permissions.push(Permission)
+    }
+
+    Channel.send({ embeds: [exports.EmbedGenerator(bot, config.GeneralEmbeds.CommandInfo, [`{Command}:${Help.name}`, `{Description}:${Help.description}`, `{Usage}:${Help.usage}`, `{Aliases}:${Help.aliases}`, `{Permissions}:${Permissions}`], User)] })
+}

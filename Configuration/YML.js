@@ -11,3 +11,14 @@ module.exports.LoadConfiguration = () => {
             console.log(chalk.bold(chalk.red(`Configuration Error! Turning off bot...`)) + chalk.bold(`\nLine: ${JsonError.mark.line}`))
         }
 }
+
+
+module.exports.LoadCommandConfiguration = () => {
+        try{
+        return yaml.safeLoad(fs.readFileSync('./Configuration/Commands.yml', 'utf8'))
+        } catch(err) {
+            let JsonError = JSON.parse(JSON.stringify(err))
+
+            console.log(chalk.bold(chalk.red(`Command Configuration Error! Turning off bot...`)) + chalk.bold(`\nLine: ${JsonError.mark.line}`))
+        }
+}

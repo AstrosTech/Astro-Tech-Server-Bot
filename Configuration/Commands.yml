@@ -3,3 +3,215 @@
 #        Astro Tech Development        #
 #                                      #
 ########################################
+########################################
+#         Allowed Permissions:         #
+#           ROLE ID                    #
+#           USER ID                    #
+#           PERMISSION NODE            #
+########################################
+
+
+# Discord.js v13 Permissions Node List:
+# https://discord.js.org/#/docs/main/stable/class/Permissions?scrollTo=s-FLAGS
+
+########################################
+#                                      #
+#           Ticket Commands            #
+#                                      #
+########################################
+TicketCommands:
+  HelpDropDown:
+    Label: "Ticket Commands"
+    Description: "Ticket Utility. Gives staff the ability to control tickets."
+    Emoji: "🎟️"
+
+  Close:
+    name: "close"
+    description: "Closes Tickets"
+    usage: "close (reason)"
+    aliases:
+      - "tclose"
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+
+
+  Rename:
+    name: "rename"
+    description: "Renames Tickets"
+    usage: "rename <name>"
+    aliases:
+      - "trename"
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+
+
+  Private:
+    name: "private"
+    description: "Privates Tickets"
+    usage: "private"
+    aliases:
+      - "tprivate"
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+
+
+  Add:
+    name: "add"
+    description: "Adds users or roles to tickets"
+    usage: "add (channel) <user or role>"
+    aliases:
+      - "tadd"
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+
+
+  Remove:
+    name: "remove"
+    description: "removes users or roles from tickets"
+    usage: "remove (channel) <user or role>"
+    aliases:
+      - "tremove"
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+
+  Ticketban:
+    name: "ticketban"
+    description: "Bans users from creating tickets"
+    usage: "tban <user>"
+    aliases:
+      - "tban"
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 10000
+    enabled: true
+
+  TicketUnban:
+    name: "ticketunban"
+    description: "UnBans users from creating tickets"
+    usage: "tunban <user>"
+    aliases:
+      - "tunban"
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+########################################
+#                                      #
+#         Suggestion Commands          #
+#                                      #
+########################################
+SuggestionCommands:
+  HelpDropDown:
+    Label: "Suggestion Commands"
+    Description: "Includes Commands Dedicated to suggestions"
+    Emoji: "💡"
+
+  Suggest:
+    name: "suggest"
+    description: "Add Suggestions"
+    usage: "suggest <category> <suggestion>"
+    aliases:
+      -
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+
+    
+  Approve:
+    name: "approve"
+    description: "Approve Suggestions"
+    usage: "approve <message id> <reason>"
+    aliases:
+      -
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+
+  Deny:
+    name: "deny"
+    description: "Denies Suggestions"
+    usage: "deny <message id> <reason>"
+    aliases:
+      -
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+
+UtilityCommands:
+  HelpDropDown:
+    Label: "Suggestion Commands"
+    Description: "General Info & Utility Commands"
+    Emoji: "🔨"
+
+  Help:
+    name: "help"
+    description: "Help Menu"
+    usage: "help"
+    aliases:
+      - "commands"
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 120000
+    enabled: true
+
+  CommandInfo:
+    name: "commandinfo"
+    description: "Provides information about commands"
+    usage: "commandinfo <command>"
+    aliases:
+      - "cinfo"
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+
+
+  Announce:
+    name: "announce"
+    description: "Provides information about commands"
+    usage: "announce <type (embed, message)> <channel>"
+    aliases:
+      - "say"
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
