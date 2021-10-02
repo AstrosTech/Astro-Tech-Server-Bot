@@ -24,16 +24,17 @@ module.exports.Status = (bot) => {
     let ActivityNumber = 1;
 
     let ActivityLength = Object.keys(config.Activities).length
-
     if(ActivityLength == 0) return
 
     let ActivityObject = Object.values(config.Activities)
     let Activity = ActivityObject[0]
-    bot.user.setActivity({ type: Activity.Type, name: Activity.Content })
+    
+    if(ActivityLength == 1) return bot.user.setActivity({ type: Activity.Type, name: exports.Placeholders(bot, Activity.Content, null, null) })
 
     setInterval(() => {
         let ActivityObject = Object.values(config.Activities)
         let Activity = ActivityObject[ActivityNumber]
+
         bot.user.setActivity({ type: Activity.Type, name: exports.Placeholders(bot, Activity.Content, null, null) })
 
         if(ActivityNumber == ActivityLength - 1) return ActivityNumber = 1
@@ -179,7 +180,9 @@ module.exports.EmbedGenerator = (bot, EmbedInformation, Placeholders, User, Avat
 }
 
 module.exports.Statistics = async (bot, Guild) => {
-
+    
+    if(!config.Statistics) return;
+    
     for(Statistic of Object.values(config.Statistics)) {
 
         let StatisticChannel = Guild.channels.cache.find(channel => channel.id == Statistic.ChannelID)

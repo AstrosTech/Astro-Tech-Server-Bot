@@ -25,14 +25,14 @@ module.exports.run = async (bot, message, args) => {
         const QuestionFilter = collected => { collected.author.id === message.author.id};
 
         let EmbedInformation = {}
-        let AttachmentsArray = []
+
         for(let i = 0; i < Questions.length; i++) {
         
             await message.channel.send({ content: Questions[i] })
             let QuestionResponseAwait = await message.channel.awaitMessages({ QuestionFilter, max: 1, time: 60000 })
 
             let QuestionResponse = QuestionResponseAwait.first()
-            if(!QuestionResponse) break;
+            if(!QuestionResponse) break ;
 
             if(i == 0) {
                 EmbedInformation.Title = QuestionResponse.content
@@ -57,6 +57,20 @@ module.exports.run = async (bot, message, args) => {
         }
 
         await Channel.send({ embeds: [ functions.EmbedGenerator(bot, EmbedInformation, null, message.author, null) ] })
+    }
+    else {
+
+    let Announcement = args.slice(2).join(" ")
+    if(!Announcement) return functions.InsufficientUsage(bot, message.guild, exports.help, message.author, message.channel)
+    
+    await Channel.send({ content: Announcement })
+
+    if(message.attachments.size > 0) {
+        let attachment = message.attachments.first()
+            if(attachment.attachment.endsWith("png") || attachment.attachment.endsWith("jpg")) { 
+                    await Channel.send({ content: attachment.proxyURL })
+            }
+    }
     }
 }
 
