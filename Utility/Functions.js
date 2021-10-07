@@ -18,25 +18,42 @@ module.exports.Start = (bot) => {
     exports.Status(bot)
     exports.Statistics(bot, Guild)
     exports.SetupSuggestions(bot, Guild)
+    exports.SetupReactRoles(bot, Guild)
 }
-/*
-module.exports.SetupReactRoles = () => {
+
+module.exports.SetupReactRoles = async (bot, Guild) => {
     if(config.ReactRolesEnabled != true) return exports.LogToConsole("React Roles Disabled.")
 
     let ReactRolesChannel = Guild.channels.cache.find(channel => channel.id == config.ReactRolesChannelID)
     if(!ReactRolesChannel) return exports.LogToConsole("ReactRolesChannelID set incorrectly. React Roles Disabled.")
     
+    let row = new Discord.MessageActionRow()
     try{
         await ReactRolesChannel.messages.fetch(config.ReactRolesMessageID)
     } catch(err) {
-        const CreateVerificationButton = new Discord.MessageActionRow()
-        .addComponents(new Discord.MessageButton().setCustomId('VerificationButton').setLabel(exports.Placeholders(bot, config.VerificationButton.Label, null, null)).setStyle(config.VerificationButton.Style),);
+        for(ReactRolesCategory in config.ReactRoles) {
+            let ReactRole = config.ReactRoles[ReactRolesCategory]
 
-        let VerificationMessageEmbed = await VerificationChannel.send({ components: [CreateVerificationButton], embeds: [exports.EmbedGenerator(bot, config.VerificationEmbeds.Verify, null)]})
-        exports.LogToConsole(`Verify Embed Sent. Please update the config with the new MessageID.\nMessage ID: ${VerificationMessageEmbed.id}`)
+            if(ReactRole.RoleID.length == 0) {
+                exports.LogToConsole(`${ReactRolesCategory} RoleID is blank. Skipping react role...`)
+                continue
+            }
+
+            if(ReactRole.ButtonLabel.length == 0) {
+                exports.LogToConsole(`${ReactRolesCategory} ButtonLabel is blank. Skipping react role...`)
+                continue
+            }
+
+            let ReactRoleButton = new Discord.MessageButton()
+            .setCustomId(ReactRolesCategory)
+            .setLabel(exports.Placeholders(bot, ReactRole.ButtonLabel, null, null))
+            .setStyle(ReactRole.ButtonStyle)
+            row.addComponents(ReactRoleButton)
+        }
+        await ReactRolesChannel.send({ components: [ row ], embeds: [ exports.EmbedGenerator(bot, config.ReactRoleEmbeds.ReactRoleMessage, null, null)] })
     }
 }
-*/
+
 module.exports.Status = (bot) => {
     let ActivityNumber = 1;
 

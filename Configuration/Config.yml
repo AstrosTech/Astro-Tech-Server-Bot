@@ -650,11 +650,38 @@ Logs:
 #                                      #
 ########################################
 ReactRolesEnabled: true
-ReactRolesChannelID: ""
-ReactRolesMessageID: ""
+ReactRolesChannelID: "895542833887453195"
+ReactRolesMessageID: "895565839959470111"
+
 ReactRoles:
-  Random1:
-    RoleIDS:
-      - ""
-    Description: ""
-    ButtonLabel: ""
+  Youtube:
+    RoleID: "865728821805711393"
+    ButtonLabel: "Youtube"
+    ButtonStyle: "PRIMARY"
+  Factions:
+    RoleID: "865728780744130582"
+    ButtonLabel: "Factions"
+    ButtonStyle: "PRIMARY"
+
+ReactRoleEmbeds:
+  ReactRoleMessage: #{Descriptions}
+    Title: "{ServerName} React Roles"
+    Color: "{ServerColor}"
+    Description: "All notifications are **enabled by default.**\nYou will need to disable notifications you do not want to receive.\n\n**Click a button below to toggle notifications for that topic!**"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  GivenRoles: # {GivenRole}, {ButtonLabel}
+    Title: "{ServerName} React Roles"
+    Color: "{ServerColor}"
+    Description: "You have been given the {GivenRole} role!\n\n*You will now receive {ButtonLabel} notifications*"
+    Image: ""
+    Thumbnail: "{AvatarURL}"
+    Footer: "{ServerName} • {TimeStamp}"
+  RemovedRoles: # {RemovedRole}, {ButtonLabel}
+    Title: "{ServerName} React Roles"
+    Color: "{ServerColor}"
+    Description: "You no longer have the {RemovedRole} role!\n\n*You will no longer receive {ButtonLabel} notifications*"
+    Image: ""
+    Thumbnail: "{AvatarURL}"
+    Footer: "{ServerName} • {TimeStamp}"
