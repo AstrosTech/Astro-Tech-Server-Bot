@@ -644,9 +644,11 @@ Logs:
       Image: ""
       Thumbnail: ""
       Footer: "{ServerName} • {TimeStamp}"
+
+
 ########################################
 #                                      #
-#         Logs Configuration           #
+#      React Role Configuration        #
 #                                      #
 ########################################
 ReactRolesEnabled: true
@@ -684,4 +686,21 @@ ReactRoleEmbeds:
     Description: "You no longer have the {RemovedRole} role!\n\n*You will no longer receive {ButtonLabel} notifications*"
     Image: ""
     Thumbnail: "{AvatarURL}"
+    Footer: "{ServerName} • {TimeStamp}"
+
+
+########################################
+#                                      #
+#       Moderation Configuration       #
+#                                      #
+########################################
+
+
+ModerationEmbeds:
+  SuccessfulBan: # {BannedMemberUsername}, {BannedMemberDiscriminantor}, {BannedMemberID}
+    Title: "{ServerName} Moderation"
+    Color: "{ServerColor}"
+    Description: "{BannedMemberUsername}#{BannedMemberDiscriminantor} ({BannedMemberID}) has been successfully banned."
+    Image: ""
+    Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
