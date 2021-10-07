@@ -19,7 +19,24 @@ module.exports.Start = (bot) => {
     exports.Statistics(bot, Guild)
     exports.SetupSuggestions(bot, Guild)
 }
+/*
+module.exports.SetupReactRoles = () => {
+    if(config.ReactRolesEnabled != true) return exports.LogToConsole("React Roles Disabled.")
 
+    let ReactRolesChannel = Guild.channels.cache.find(channel => channel.id == config.ReactRolesChannelID)
+    if(!ReactRolesChannel) return exports.LogToConsole("ReactRolesChannelID set incorrectly. React Roles Disabled.")
+    
+    try{
+        await ReactRolesChannel.messages.fetch(config.ReactRolesMessageID)
+    } catch(err) {
+        const CreateVerificationButton = new Discord.MessageActionRow()
+        .addComponents(new Discord.MessageButton().setCustomId('VerificationButton').setLabel(exports.Placeholders(bot, config.VerificationButton.Label, null, null)).setStyle(config.VerificationButton.Style),);
+
+        let VerificationMessageEmbed = await VerificationChannel.send({ components: [CreateVerificationButton], embeds: [exports.EmbedGenerator(bot, config.VerificationEmbeds.Verify, null)]})
+        exports.LogToConsole(`Verify Embed Sent. Please update the config with the new MessageID.\nMessage ID: ${VerificationMessageEmbed.id}`)
+    }
+}
+*/
 module.exports.Status = (bot) => {
     let ActivityNumber = 1;
 
@@ -119,6 +136,7 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
             ReplacedMessage = ReplacedMessage.replace(SplitPlaceholders[0], SplitPlaceholders[1])
         }
     }
+
     if(user != null) {
         ReplacedMessage = ReplacedMessage
         .replace("{UserID}", user.id)
@@ -144,6 +162,31 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
     .replace("{ServerName}", config.ServerName)
     .replace("{ServerColor}", config.ServerColor)
     .replace("{TimeStamp}", `${moment().tz('America/New_York').format("dddd, MMMM Do, h:mm a")} EST`)
+
+    
+    let regex = /\((.*?)\)/g;
+
+    while(found = regex.exec(ReplacedMessage)) {
+        let ID = found[1]
+
+        let ChannelCheck = Guild.channels.cache.find(channel => channel.id == ID)
+        if(ChannelCheck) {
+            ReplacedMessage = ReplacedMessage.replace(found[0], ChannelCheck.toString())
+            continue
+        }
+        
+        let RoleCheck = Guild.roles.cache.find(role => role.id == ID)
+        if(RoleCheck) {
+            ReplacedMessage = ReplacedMessage.replace(found[0], RoleCheck.toString())
+            continue
+        }
+
+        let MemberCheck = Guild.members.cache.get(ID)
+        if(MemberCheck) {
+            ReplacedMessage = ReplacedMessage.replace(found[0], MemberCheck.toString())
+            continue
+        }
+    }
     
     return ReplacedMessage
 }

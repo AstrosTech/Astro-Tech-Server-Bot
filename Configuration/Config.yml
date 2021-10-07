@@ -51,6 +51,9 @@
 #     {ServerColor} (As set in the config)  #
 #     {TimeStamp}                           #
 #############################################
+#
+# You also have the ability to add any Channel, Member, or Role ping to any embed.
+# To do so all you need to do is put the ID in brackets. Example: [183340750422016001]
 
 ########################################
 #                                      #
@@ -127,9 +130,17 @@ GeneralEmbeds:
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
+
 ########################################
 #           Example Embed              #
-########################################  
+########################################
+TestEmbed: #{Error}
+    Title: ":warning: Error! :warning:"
+    Color: "{ServerColor}"
+    Description: "__**A warning has occured!**__\n\n{Error}\n\n(882695643531976714) taco (864245215043649548) jack (183340750422016001)"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
 ExampleEmbed:
   Title: ""
   Color: ""
@@ -633,3 +644,17 @@ Logs:
       Image: ""
       Thumbnail: ""
       Footer: "{ServerName} • {TimeStamp}"
+########################################
+#                                      #
+#         Logs Configuration           #
+#                                      #
+########################################
+ReactRolesEnabled: true
+ReactRolesChannelID: ""
+ReactRolesMessageID: ""
+ReactRoles:
+  Random1:
+    RoleIDS:
+      - ""
+    Description: ""
+    ButtonLabel: ""

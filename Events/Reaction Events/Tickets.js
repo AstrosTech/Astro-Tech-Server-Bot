@@ -6,7 +6,7 @@ const TicketBanDatabase = require('../../Database/Models/TicketBanModel')
 const moment = require('moment-timezone')
 
 module.exports = bot => { 
-bot.on("interactionCreate", async (interaction)  => {
+    bot.on("interactionCreate", async (interaction) => {
         if(!interaction.isButton()) return;
         if(interaction.customId != "TicketButton") return;
         
