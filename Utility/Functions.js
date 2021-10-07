@@ -186,8 +186,14 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
             ReplacedMessage = ReplacedMessage.replace(found[0], MemberCheck.toString())
             continue
         }
+
+        let EmojiCheck = Guild.emojis.cache.find(emoji => emoji.id == ID)
+        if(EmojiCheck) {
+            ReplacedMessage = ReplacedMessage.replace(found[0], EmojiCheck)
+            continue
+        }
     }
-    
+
     return ReplacedMessage
 }
 
