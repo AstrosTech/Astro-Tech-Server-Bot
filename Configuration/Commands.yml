@@ -233,3 +233,15 @@ ModerationCommands:
       - "865701485613547541"
     cooldown: 0
     enabled: true
+  Kick:
+    name: "kick"
+    description: "Bans users from the Discord"
+    usage: "ban <user> [reason]"
+    aliases:
+      -
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true

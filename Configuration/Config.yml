@@ -697,10 +697,17 @@ ReactRoleEmbeds:
 
 
 ModerationEmbeds:
-  SuccessfulBan: # {BannedMemberUsername}, {BannedMemberDiscriminantor}, {BannedMemberID}
+  SuccessfulBan: #{BannedMemberUsername}, {BannedMemberDiscriminantor}, {BannedMemberID}
     Title: "{ServerName} Moderation"
     Color: "{ServerColor}"
     Description: "{BannedMemberUsername}#{BannedMemberDiscriminantor} ({BannedMemberID}) has been successfully banned."
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  SuccessfulKick: #{KickedMemberUsername}, {KickedMemberDiscriminantor}, {KickedMemberID}
+    Title: "{ServerName} Moderation"
+    Color: "{ServerColor}"
+    Description: "{KickedMemberUsername}#{KickedMemberDiscriminantor} ({KickedMemberID}) has been successfully kicked."
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
