@@ -366,6 +366,13 @@ TicketEmbeds:
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
+  SuccessfullyRenamed:
+    Title: "{ServerName} Tickets"
+    Color: "{ServerColor}"
+    Description: "{TicketChannel} has been successfully renamed to {Name}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
 ########################################
 #                                      #
 #     Verification Configuration       #

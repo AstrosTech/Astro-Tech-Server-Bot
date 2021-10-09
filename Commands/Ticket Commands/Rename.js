@@ -2,13 +2,14 @@ const config = require('../../Configuration/YML').LoadConfiguration();
 const functions = require('../../Utility/Functions')
 
 module.exports.run = async (bot, message, args) => {
-    if(!message.channel.name.startsWith("ticket")) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.NotATicketChannel, [`{Command}:Close`], message.author)] })
+    if(!message.channel.name.startsWith("ticket")) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.NotATicketChannel, [`{Command}:${exports.help.name}`], message.author)] })
 
 
     let NewName = args.slice(0).join(" ")
     if(!NewName) return functions.InsufficientUsage(bot, message.guild, exports.help, message.author, message.channel)
 
-    await message.channel.rename(`ticket-${NewName}`).catch(err => { console.error(err) })
+    await message.channel.setName(`ticket-${NewName}`).catch(err => { console.error(err) })
+    await message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SuccessfullyRenamed, [`{TicketChannel}:${message.channel.toString()}`, `{Name}:ticket-${NewName}`], message.author)] })
 }
 
 
