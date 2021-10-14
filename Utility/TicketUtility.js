@@ -165,9 +165,9 @@ module.exports.TicketTimedOut = async (bot, User, TicketChannel) => {
     return
 }
 
-module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketChannel, User, TicketCategory) => {
+module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketChannel, User) => {
 
-    if(!TicketCategory || !TicketChannel) return
+    if(!Additional || !TicketChannel) return
 
     let row = new Discord.MessageActionRow()
     await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: false });
@@ -180,7 +180,7 @@ module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketC
         let AdditionalCategoryName = Object.keys(config.TicketAdditionals[Additional])[i]
         let AdditionalCategory = config.TicketAdditionals[Additional][AdditionalCategoryName]
         
-        let AlreadyTicketCheck = TicketChannel.guild.channels.cache.find(channel => channel.topic === `${User.id}-${TicketCategory.ParentID}`)
+        let AlreadyTicketCheck = TicketChannel.guild.channels.cache.find(channel => channel.topic === `${User.id}-${AdditionalCategory.ParentID}`)
         if(AlreadyTicketCheck) continue;
         
         DropDownMenu.addOptions([
@@ -207,7 +207,9 @@ module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketC
 
         await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: true });
 
-        if(MenuResponse.values[0].ParentID) await TicketChannel.setParent(MenuResponse.values[0].ParentID, { lockPermissions: false })
+        console.log(config.TicketAdditionals[Additional][MenuResponse.values[0]])
+        
+        if(config.TicketAdditionals[Additional][MenuResponse.values[0]].ParentID) await TicketChannel.setParent(config.TicketAdditionals[Additional][MenuResponse.values[0]].ParentID, { lockPermissions: false })
         return MenuResponse.values[0]
 }
 
