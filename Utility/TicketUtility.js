@@ -55,6 +55,7 @@ module.exports.TicketCounter = async () => {
 
 
 module.exports.TicketCategorySelection = async (bot, TicketChannel, User) => {
+    if(!TicketChannel) return
     let row = new Discord.MessageActionRow()
 
     let DropDownMenu = new Discord.MessageSelectMenu()
@@ -106,12 +107,13 @@ module.exports.AutomatedTicketQuestions = async (bot, TicketCategory, TicketChan
     let UserResponses = []
     let UserImages = []
 
+    if(!TicketCategory || !TicketChannel) return
     for (let i = 0; i < TicketCategory.Questions.length; i++) {
         let TicketQuestion = TicketCategory.Questions[i]
         
         if(TicketQuestion.startsWith("Additional")) {
             let AdditionalName = TicketQuestion.split(":")[1]
-            let SelectedAdditional = await exports.TicketAdditionalsCategorySelect(bot, AdditionalName, TicketChannel, User)
+            let SelectedAdditional = await exports.TicketAdditionalsCategorySelect(bot, AdditionalName, TicketChannel, User, TicketCategory)
             
 
             UserResponses.push(`**__${SelectedAdditional}__**`)
@@ -123,7 +125,7 @@ module.exports.AutomatedTicketQuestions = async (bot, TicketCategory, TicketChan
         else {
             const QuestionFilter = collected => collected.author.id === User.id;
 
-            let QuestionMessage = await TicketChannel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.AutomatedQuestionMessage, [`{Question}:${TicketQuestion}`])] })
+            await TicketChannel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.AutomatedQuestionMessage, [`{Question}:${TicketQuestion}`])] })
             let QuestionResponseAwait = await TicketChannel.awaitMessages({ QuestionFilter, max: 1, time: config.TicketQuestionTimeout })
 
             let QuestionResponse = QuestionResponseAwait.first()
@@ -163,7 +165,10 @@ module.exports.TicketTimedOut = async (bot, User, TicketChannel) => {
     return
 }
 
-module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketChannel, User) => {
+module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketChannel, User, TicketCategory) => {
+
+    if(!TicketCategory || !TicketChannel) return
+
     let row = new Discord.MessageActionRow()
     await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: false });
 
@@ -175,6 +180,9 @@ module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketC
         let AdditionalCategoryName = Object.keys(config.TicketAdditionals[Additional])[i]
         let AdditionalCategory = config.TicketAdditionals[Additional][AdditionalCategoryName]
         
+        let AlreadyTicketCheck = TicketChannel.guild.channels.cache.find(channel => channel.topic === `${User.id}-${TicketCategory.ParentID}`)
+        if(AlreadyTicketCheck) continue;
+        
         DropDownMenu.addOptions([
             {
                 label: AdditionalCategory.Name,
@@ -185,7 +193,7 @@ module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketC
         ])
     }
 
-        if(DropDownMenu.options.length < 1) return exports.AlreadyHasTicket(bot, "All", TicketChannel, null, User, TicketChannel)
+        if(DropDownMenu.options.length < 1) return exports.AlreadyHasTicket(bot, Additional.Name, TicketChannel, null, User, TicketChannel)
         
         row.addComponents(DropDownMenu)
         let MenuMessage = await TicketChannel.send({embeds:[functions.EmbedGenerator(bot, config.TicketEmbeds.CategorySelectEmbed, null)], components: [row]})
@@ -198,6 +206,8 @@ module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketC
         await MenuResponse.reply({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SelectedCategoryReply, [`{TicketCategory}:${config.TicketAdditionals[Additional][MenuResponse.values[0]].Name}`])] })
 
         await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: true });
+
+        if(MenuResponse.values[0].ParentID) await TicketChannel.setParent(MenuResponse.values[0].ParentID, { lockPermissions: false })
         return MenuResponse.values[0]
 }
 
@@ -205,12 +215,14 @@ module.exports.TicketAdditionalsAutomatedQuestions = async (bot, TicketCategory,
     let UserResponses = []
     let UserImages = []
 
+    if(!TicketCategory || !TicketChannel) return
+
     for (let i = 0; i < TicketCategory.Questions.length; i++) {
         let TicketQuestion = TicketCategory.Questions[i]
         
         if(TicketQuestion.startsWith("Additional")) {
             let AdditionalName = TicketQuestion.split(":")[1]
-            let SelectedAdditional = await exports.TicketAdditionalsCategorySelect(bot, AdditionalName, TicketChannel, User)
+            let SelectedAdditional = await exports.TicketAdditionalsCategorySelect(bot, AdditionalName, TicketChannel, User, TicketCategory)
             
             UserResponses.push(`**__${SelectedAdditional}__**`)
             let AdditionalResponses = await exports.TicketAdditionalsAutomatedQuestions(bot, config.TicketAdditionals[AdditionalName][SelectedAdditional], TicketChannel, User)
@@ -221,7 +233,7 @@ module.exports.TicketAdditionalsAutomatedQuestions = async (bot, TicketCategory,
         else {
             const QuestionFilter = collected => collected.author.id === User.id;
 
-            let QuestionMessage = await TicketChannel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.AutomatedQuestionMessage, [`{Question}:${TicketQuestion}`])] })
+            await TicketChannel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.AutomatedQuestionMessage, [`{Question}:${TicketQuestion}`])] })
             let QuestionResponseAwait = await TicketChannel.awaitMessages({ QuestionFilter, max: 1, time: config.TicketQuestionTimeout })
 
             let QuestionResponse = QuestionResponseAwait.first()

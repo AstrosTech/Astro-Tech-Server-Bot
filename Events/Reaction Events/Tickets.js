@@ -27,7 +27,7 @@ module.exports = bot => {
         const [FirstDescription, ...RestDescription] = Discord.Util.splitMessage(AutomatedQuestionResponses.UserResponses.join("\n"), { maxLength: 4000, char: "\n" })
         await TicketChannel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.FinalTicketEmbed, [`{AutomatedQuestions}:${FirstDescription}`], interaction.user)] })
 
-        for (let i = 0; i < RestDescription.length; i++) { await TicketChannel.send( { embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.TicketEmbedRunOff, [`{Count}:${i}`, `{Description}:${RestDescription[i]}`], interaction.user)] })}
+        for (let i = 0; i < RestDescription.length; i++) { await TicketChannel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.TicketEmbedRunOff, [`{Count}:${i}`, `{Description}:${RestDescription[i]}`], interaction.user)] })}
         if(AutomatedQuestionResponses.UserImages.length > 0) await TicketChannel.send({ content: AutomatedQuestionResponses.UserImages })
     })
 }

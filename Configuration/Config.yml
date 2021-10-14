@@ -204,10 +204,11 @@ TicketCategories:
 ########################################
 #     Ticket Category Additionals      #
 ########################################
-TicketAdditionals:
+TicketAdditionals: # ParentID is optional -- Remove if you don't want it to switch the category of the channel
   Applications:
     TrialMod:
       Name: "Trial-Moderator"
+      ParentID: "898087199961149451"
       Description: "Trial Moderator Applications"
       Emoji: "🔥"
       Questions:
