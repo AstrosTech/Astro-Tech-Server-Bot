@@ -146,15 +146,18 @@ module.exports.AutomatedTicketQuestions = async (bot, TicketCategory, TicketChan
         }
     }
     
+    let Staff = []
     for(StaffIDS of TicketCategory.StaffIDs) {
         let StaffRole = await bot.guilds.cache.get(config.GuildID).roles.cache.find(role => role.id == StaffIDS)
         if(!StaffRole) return
         
         await TicketChannel.permissionOverwrites.edit(StaffRole, { VIEW_CHANNEL: true });
-        let StaffRolePing = await TicketChannel.send({ content: StaffRole.toString() });
-        await StaffRolePing.delete().catch(err => { return; })
+
+        Staff.push(StaffRole.toString())
     }
 
+    let StaffRolePing = await TicketChannel.send({ content: Staff.join(', ') });
+    await StaffRolePing.delete().catch(err => { return; })
     return { UserResponses, UserImages }
 }
 
@@ -206,8 +209,6 @@ module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketC
         await MenuResponse.reply({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SelectedCategoryReply, [`{TicketCategory}:${config.TicketAdditionals[Additional][MenuResponse.values[0]].Name}`])] })
 
         await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: true });
-
-        console.log(config.TicketAdditionals[Additional][MenuResponse.values[0]])
         
         if(config.TicketAdditionals[Additional][MenuResponse.values[0]].ParentID) await TicketChannel.setParent(config.TicketAdditionals[Additional][MenuResponse.values[0]].ParentID, { lockPermissions: false })
         return MenuResponse.values[0]
