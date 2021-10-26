@@ -1,112 +1,470 @@
-const Discord = require('discord.js')
-const functions = require('./Functions')
-const fs = require('fs')
-const moment = require('moment-timezone')
-
+const Discord = require('discord.js');
 const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
-const dom = new JSDOM();
-const document = dom.window.document;
+const fs = require('fs');
+const purify = require('dompurify');
+const escape = require('escape-html');
+const moment = require('moment-timezone');
 
-module.exports.Transcript = async (bot, Channel) => {
-    let MessageCollection = new Discord.Collection();
-    let ChannelMessages = await Channel.messages.fetch({ limit: 100 }).catch(err => { console.log(err) })
+module.exports.createTranscript = async (channel) => {
+    const messages = [];
+    let last_id;
 
-    MessageCollection = MessageCollection.concat(ChannelMessages)
-
-    while(ChannelMessages.size === 100) {
-        let LastMessageID = ChannelMessages.lastKey()
-        ChannelMessages = await Channel.messages.fetch({ limit: 100, before: LastMessageID }).catch(err => { console.log(err) })
-
-        if(ChannelMessages) MessageCollection = MessageCollection.concat(ChannelMessages)
+    while (true) {
+        const FetchedMessages = await channel.messages.fetch({ limit: 100, before: last_id });
+        messages.push(...FetchedMessages.values());
+        last_id = FetchedMessages.last().id;
+    
+        if (FetchedMessages.size != 100) break;
     }
+
+    return exports.generateTranscript(messages, channel)
+}
+
+module.exports.generateTranscript = async (messages, channel) => {
+    const template = fs.readFileSync('./Configuration/template.html', 'utf8');
+
+    let static = {
+        defaultPFP: 'https://cdn.discordapp.com/embed/avatars/0.png',
+        DummyUser: {
+            bot: false,
+            id: '00000000000',
+            tag: "Unknown User#0000",
+            name: "Unknown User",
+            username: "Unknown User",
+            hexAccentColor: "#000000",
+            avatarURL: () => 'https://cdn.discordapp.com/embed/avatars/0.png'
+        }
+    }
+
+    const dom = new jsdom.JSDOM(template.replace('{{TITLE}}', channel.name));
+    const document = dom.window.document;
+
+    const DOMPurify = purify(dom.window);
+    DOMPurify.setConfig({
+        ALLOWED_TAGS: []
+    });
+    const xss = DOMPurify.sanitize;
     
-    let Messages = [...MessageCollection.values()].reverse();
-    let TranscriptTemplate = await fs.readFileSync('././Configuration/TicketTemplate.html')
-    
-    if(!TranscriptTemplate) return functions.LogToConsole("TicketTemplate.html cannot be found. Cannot transcript.")
+    // Basic Info (header)
+    document.getElementsByClassName('preamble__guild-icon')[0].src = channel.guild.iconURL();
+    document.getElementById('guildname').textContent = channel.guild.name;
+    document.getElementById('ticketname').textContent = channel.name;
+
+    const transcript = document.getElementById('chatlog');
+
+    // Messages
+    for(const message of (Array.from(messages)).sort((a, b) => a.createdTimestamp - b.createdTimestamp)) {
+        // create message group
+        const messageGroup = document.createElement('div');
+        messageGroup.classList.add('chatlog__message-group');
+
+        // message reference
+        if(message.reference?.messageId) {
+            // create symbol
+            const referenceSymbol = document.createElement('div');
+            referenceSymbol.classList.add('chatlog__reference-symbol');
+
+            // create reference
+            const reference = document.createElement('div');
+            reference.classList.add('chatlog__reference');
+
+            const referencedMessage = messages instanceof discord.Collection ? messages.get(message.reference.messageId) : messages.find(m => m.id === message.reference.messageId);
+            const author = referencedMessage.author ?? static.DummyUser;
+
+            reference.innerHTML = 
+            `<img class="chatlog__reference-avatar" src="${author.avatarURL() ?? static.defaultPFP}" alt="Avatar" loading="lazy">
+            <span class="chatlog__reference-name" title="${author.username.replace(/"/g, '')}" style="color: ${author.hexAccentColor}">${xss(author.username)}</span>
+            <div class="chatlog__reference-content">
+                <span class="chatlog__reference-link" onclick="scrollToMessage(event, '${message.reference.messageId}')">
+                        <em>${xss(
+                            message.content ? `${message.content.substr(0, 42)}...` : 'Click to see attachment'
+                        )}</em>
+                </span>
+            </div>`
+
+            messageGroup.appendChild(referenceSymbol);
+            messageGroup.appendChild(reference);
+        }
+
+        // message author pfp
+        const author = message.author ?? static.DummyUser;
+        
+        const authorElement = document.createElement('div');
+        authorElement.classList.add('chatlog__author-avatar-container');
+
+        const authorAvatar = document.createElement('img');
+        authorAvatar.classList.add('chatlog__author-avatar');
+        authorAvatar.src = author.avatarURL() ?? static.defaultPFP;
+        authorAvatar.alt = 'Avatar';
+        authorAvatar.loading = 'lazy';
+
+        authorElement.appendChild(authorAvatar);
+        messageGroup.appendChild(authorElement);
+
+        // message content
+        const content = document.createElement('div');
+        content.classList.add('chatlog__messages');
+
+        // message author name
+        const authorName = document.createElement('span');
+        authorName.classList.add('chatlog__author-name');
+        authorName.title = xss(author.tag);
+        authorName.textContent = author.username + "#" + author.discriminator;
+        authorName.setAttribute('data-user-id', author.id);
+
+        content.appendChild(authorName);
+
+        if(author.bot) {
+            const botTag = document.createElement('span');
+            botTag.classList.add('chatlog__bot-tag');
+            botTag.textContent = 'BOT';
+            content.appendChild(botTag);
+        }
+
+        // timestamp
+        const timestamp = document.createElement('span');
+        timestamp.classList.add('chatlog__timestamp');
+        timestamp.textContent = moment(message.createdAt).tz('America/New_York').format("dddd, MMMM Do, h:mm a") + " EST"
+
+        content.appendChild(timestamp);
+
+        const messageContent = document.createElement('div');
+        messageContent.classList.add('chatlog__message');
+        messageContent.setAttribute('data-message-id', message.id);
+        messageContent.setAttribute('id', `message-${message.id}`);
+        messageContent.title = `Message sent: ${moment(message.createdAt).tz('America/New_York').format("dddd, MMMM Do, h:mm a")} + " EST`;
+
+        // message content
+        if(message.content) {
+            const messageContentContent = document.createElement('div');
+            messageContentContent.classList.add('chatlog__content');
+
+            const messageContentContentMarkdown = document.createElement('div');
+            messageContentContentMarkdown.classList.add('markdown');
+
+            const messageContentContentMarkdownSpan = document.createElement('span');
+            messageContentContentMarkdownSpan.classList.add('preserve-whitespace');
+            messageContentContentMarkdownSpan.innerHTML = formatContent(message.content, escape);
+
+            messageContentContentMarkdown.appendChild(messageContentContentMarkdownSpan);
+            messageContentContent.appendChild(messageContentContentMarkdown);
+            messageContent.appendChild(messageContentContent);
+        }
+
+        // message attachments
+        if(message.attachments && message.attachments.size > 0) {
+            for(const attachment of message.attachments.values()) {
+                const attachmentsDiv = document.createElement('div');
+                attachmentsDiv.classList.add('chatlog__attachment');
+
+                const attachmentType = attachment.name.split('.').pop();
+
+                if(['png', 'jpg', 'jpeg', 'gif'].includes(attachmentType)) {
+                    const attachmentLink = document.createElement('a');
+
+                    const attachmentImage = document.createElement('img');
+                    attachmentImage.classList.add('chatlog__attachment-media');
+                    attachmentImage.src = attachment.proxyURL ?? attachment.url;
+                    attachmentImage.alt = 'Image attachment';
+                    attachmentImage.loading = 'lazy';
+                    attachmentImage.title = `Image: ${attachment.name} (${formatBytes(attachment.size)})`;
+
+                    attachmentLink.appendChild(attachmentImage);
+                    attachmentsDiv.appendChild(attachmentLink);
+                } else if(['mp4', 'webm'].includes(attachmentType)) {
+                    const attachmentVideo = document.createElement('video');
+                    attachmentVideo.classList.add('chatlog__attachment-media');
+                    attachmentVideo.src = attachment.proxyURL ?? attachment.url;
+                    attachmentVideo.alt = 'Video attachment';
+                    attachmentVideo.controls = true;
+                    attachmentVideo.title = `Video: ${attachment.name} (${formatBytes(attachment.size)})`;
+
+                    attachmentsDiv.appendChild(attachmentVideo);
+                } else if(['mp3', 'ogg'].includes(attachmentType)) {
+                    const attachmentAudio = document.createElement('audio');
+                    attachmentAudio.classList.add('chatlog__attachment-media');
+                    attachmentAudio.src = attachment.proxyURL ?? attachment.url;
+                    attachmentAudio.alt = 'Audio attachment';
+                    attachmentAudio.controls = true;
+                    attachmentAudio.title = `Audio: ${attachment.name} (${formatBytes(attachment.size)})`;
+
+                    attachmentsDiv.appendChild(attachmentAudio);
+                } else {
+                    const attachmentGeneric = document.createElement('div');
+                    attachmentGeneric.classList.add('chatlog__attachment-generic');
+
+                    const attachmentGenericIcon = document.createElement('svg');
+                    attachmentGenericIcon.classList.add('chatlog__attachment-generic-icon');
+
+                    const attachmentGenericIconUse = document.createElement('use');
+                    attachmentGenericIconUse.setAttribute('href', '#icon-attachment');
+
+                    attachmentGenericIcon.appendChild(attachmentGenericIconUse);
+                    attachmentGeneric.appendChild(attachmentGenericIcon);
+                    
+                    const attachmentGenericName = document.createElement('div');
+                    attachmentGenericName.classList.add('chatlog__attachment-generic-name');
+
+                    const attachmentGenericNameLink = document.createElement('a');
+                    attachmentGenericNameLink.href = attachment.proxyURL ?? attachment.url;
+                    attachmentGenericNameLink.textContent = attachment.name;
+
+                    attachmentGenericName.appendChild(attachmentGenericNameLink);
+                    attachmentGeneric.appendChild(attachmentGenericName);
+
+                    const attachmentGenericSize = document.createElement('div');
+                    attachmentGenericSize.classList.add('chatlog__attachment-generic-size');
+
+                    attachmentGenericSize.textContent = `${formatBytes(attachment.size)}`;
+                    attachmentGeneric.appendChild(attachmentGenericSize);
+
+                    attachmentsDiv.appendChild(attachmentGeneric);
+                }
+
+                messageContent.appendChild(attachmentsDiv);
+            }
+        }
+
+        content.appendChild(messageContent);
+
+        // embeds
+        if(message.embeds && message.embeds.length > 0) {
+            for(const embed of message.embeds) {
+                const embedDiv = document.createElement('div');
+                embedDiv.classList.add('chatlog__embed');
+
+                // embed color
+                if(embed.hexColor) {
+                    const embedColorPill = document.createElement('div');
+                    embedColorPill.classList.add('chatlog__embed-color-pill');
+                    embedColorPill.style.backgroundColor = embed.hexColor;
+
+                    embedDiv.appendChild(embedColorPill);
+                }
+
+                const embedContentContainer = document.createElement('div');
+                embedContentContainer.classList.add('chatlog__embed-content-container');
+
+                const embedContent = document.createElement('div');
+                embedContent.classList.add('chatlog__embed-content');
+
+                const embedText = document.createElement('div');
+                embedText.classList.add('chatlog__embed-text');
+
+                // embed author
+                if(embed.author?.name) {
+                    const embedAuthor = document.createElement('div');
+                    embedAuthor.classList.add('chatlog__embed-author');
+
+                    if(embed.author.iconURL) {
+                        const embedAuthorIcon = document.createElement('img');
+                        embedAuthorIcon.classList.add('chatlog__embed-author-icon');
+                        embedAuthorIcon.src = embed.author.iconURL;
+                        embedAuthorIcon.alt = 'Author icon';
+                        embedAuthorIcon.loading = 'lazy';
+                        embedAuthorIcon.onerror = () => embedAuthorIcon.style.visibility = 'hidden';
+
+                        embedAuthor.appendChild(embedAuthorIcon);
+                    }
+
+                    const embedAuthorName = document.createElement('span');
+                    embedAuthorName.classList.add('chatlog__embed-author-name');
+
+                    if(embed.author.url) {
+                        const embedAuthorNameLink = document.createElement('a');
+                        embedAuthorNameLink.classList.add('chatlog__embed-author-name-link');
+                        embedAuthorNameLink.href = embed.author.url;
+                        embedAuthorNameLink.textContent = embed.author.name;
+
+                        embedAuthorName.appendChild(embedAuthorNameLink);
+                    } else {
+                        embedAuthorName.textContent = embed.author.name;
+                    }
+
+                    embedAuthor.appendChild(embedAuthorName);
+                    embedText.appendChild(embedAuthor);
+                }
+
+                // embed title
+                if(embed.title) {
+                    const embedTitle = document.createElement('div');
+                    embedTitle.classList.add('chatlog__embed-title');
+
+                    if(embed.url) {
+                        const embedTitleLink = document.createElement('a');
+                        embedTitleLink.classList.add('chatlog__embed-title-link');
+                        embedTitleLink.href = embed.url;
+
+                        const embedTitleMarkdown = document.createElement('div');
+                        embedTitleMarkdown.classList.add('markdown', 'preserve-whitespace');
+                        embedTitleMarkdown.textContent = embed.title;
+
+                        embedTitleLink.appendChild(embedTitleMarkdown);
+                        embedTitle.appendChild(embedTitleLink);
+                    } else {
+                        const embedTitleMarkdown = document.createElement('div');
+                        embedTitleMarkdown.classList.add('markdown', 'preserve-whitespace');
+                        embedTitleMarkdown.textContent = embed.title;
+
+                        embedTitle.appendChild(embedTitleMarkdown);
+                    }
+
+                    embedText.appendChild(embedTitle);
+                }
+
+                // embed description
+                if(embed.description) {
+                    const embedDescription = document.createElement('div');
+                    embedDescription.classList.add('chatlog__embed-description');
+
+                    const embedDescriptionMarkdown = document.createElement('div');
+                    embedDescriptionMarkdown.classList.add('markdown', 'preserve-whitespace');
+                    embedDescriptionMarkdown.innerHTML = formatContent(embed.description);
+
+                    embedDescription.appendChild(embedDescriptionMarkdown);
+                    embedText.appendChild(embedDescription);
+                }
+
+                // embed fields
+                if(embed.fields && embed.fields.length > 0) {
+                    const embedFields = document.createElement('div');
+                    embedFields.classList.add('chatlog__embed-fields');
+
+                    for(const field of embed.fields) {
+                        const embedField = document.createElement('div');
+                        embedField.classList.add(
+                            ...(!field.inline ? ['chatlog__embed-field'] : ['chatlog__embed-field', 'chatlog__embed-field--inline'])
+                        );
+
+                        // Field name
+                        const embedFieldName = document.createElement('div');
+                        embedFieldName.classList.add('chatlog__embed-field-name');
+
+                        const embedFieldNameMarkdown = document.createElement('div');
+                        embedFieldNameMarkdown.classList.add('markdown', 'preserve-whitespace');
+                        embedFieldNameMarkdown.textContent = field.name;
+
+                        embedFieldName.appendChild(embedFieldNameMarkdown);
+                        embedField.appendChild(embedFieldName);
 
 
-    await fs.writeFileSync(`././Database/Transcripts/${Channel.id}-Transcript.html`, TranscriptTemplate)
+                        // Field value
+                        const embedFieldValue = document.createElement('div');
+                        embedFieldValue.classList.add('chatlog__embed-field-value');
 
-    let GuildElement = document.createElement('div')
-    let GuildText = document.createTextNode(Channel.guild.name)
-    let GuildImage = document.createElement('img')
+                        const embedFieldValueMarkdown = document.createElement('div');
+                        embedFieldValueMarkdown.classList.add('markdown', 'preserve-whitespace');
+                        embedFieldValueMarkdown.innerHTML = formatContent(field.value);
 
-    GuildImage.setAttribute('src', Channel.guild.iconURL())
-    GuildImage.setAttribute('width', '150')
+                        embedFieldValue.appendChild(embedFieldValueMarkdown);
+                        embedField.appendChild(embedFieldValue);
 
-    GuildElement.appendChild(GuildImage)
-    GuildElement.appendChild(GuildText)
+                        embedFields.appendChild(embedField);
+                    }
 
-    await fs.appendFileSync(`././Database/Transcripts/${Channel.id}-Transcript.html`, GuildElement.outerHTML)
-    
-    for(msg of Messages) {
-            let parentContainer = document.createElement("div");
-                        parentContainer.className = "parent-container";
+                    embedText.appendChild(embedFields);
+                }
 
-                        let avatarDiv = document.createElement("div");
-                        avatarDiv.className = "avatar-container";
-                        let img = document.createElement('img');
-                        img.setAttribute('src', msg.author.displayAvatarURL());
-                        img.className = "avatar";
-                        avatarDiv.appendChild(img);
+                embedContent.appendChild(embedText);
 
-                        parentContainer.appendChild(avatarDiv);
+                // embed thumbnail
+                if(embed.thumbnail?.proxyURL ?? embed.thumbnail?.url) {
+                    const embedThumbnail = document.createElement('div');
+                    embedThumbnail.classList.add('chatlog__embed-thumbnail-container');
 
-                        let messageContainer = document.createElement('div');0
-                        messageContainer.className = "message-container";
+                    const embedThumbnailLink = document.createElement('a');
+                    embedThumbnailLink.classList.add('chatlog__embed-thumbnail-link');
+                    embedThumbnailLink.href = embed.thumbnail.proxyURL ?? embed.thumbnail.url;
 
-                        let nameElement = document.createElement("span");
-                        let name = document.createTextNode(msg.author.tag + " " + moment(msg.createdAt).tz('America/New_York').format("dddd, MMMM Do, h:mm a") + " EST");
-                        nameElement.appendChild(name);
-                        messageContainer.append(nameElement);
+                    const embedThumbnailImage = document.createElement('img');
+                    embedThumbnailImage.classList.add('chatlog__embed-thumbnail');
+                    embedThumbnailImage.src = embed.thumbnail.proxyURL ?? embed.thumbnail.url;
+                    embedThumbnailImage.alt = 'Thumbnail';
+                    embedThumbnailImage.loading = 'lazy';
 
-                        if(msg.content.startsWith("```")) {
-                            let m = msg.content.replace(/```/g, "");
-                            let codeNode = document.createElement("code");
-                            let textNode =  document.createTextNode(m);
-                            codeNode.appendChild(textNode);
-                            messageContainer.appendChild(codeNode);
-                        }
-                        
-                        else if (msg.content == '') {
-                        if(msg.embeds.length == 0) return
-                        let m = msg.embeds[0].description
-                        let EmbedDiv = document.createElement("div");
-                        EmbedDiv.className = "embed-container";
-                        let codeNode = document.createElement("code");
-                        let textNode =  document.createTextNode(m);
-                        codeNode.className = "card1";
-                            codeNode.appendChild(textNode);
-                            messageContainer.appendChild(codeNode)
-                        }
-                        
+                    embedThumbnailLink.appendChild(embedThumbnailImage);
+                    embedThumbnail.appendChild(embedThumbnailLink);
 
-                        
-                        else if (msg.attachments.size > 0) {
-                        let avatarDiv = document.createElement("div");
-                        avatarDiv.className = "avatar-container";
-                        let img = document.createElement('img');
-                        
-                        let url;
-                        msg.attachments.forEach(attachment => {
-                            url = attachment.url
-                        })
+                    embedContent.appendChild(embedThumbnail);
+                }
 
+                embedContentContainer.appendChild(embedContent);
 
-                        img.setAttribute('src', url);
-                        img.className = "Images";
-                        avatarDiv.appendChild(img);
-                        }
-                        else {
-                            let msgNode = document.createElement('span');
-                            let textNode = document.createTextNode(msg.content);
-                            msgNode.append(textNode);
-                            messageContainer.appendChild(msgNode);
-                        }
-                        
-                        parentContainer.appendChild(messageContainer);
-            await fs.appendFileSync(`././Database/Transcripts/${Channel.id}-Transcript.html`, parentContainer.outerHTML)
-            };
+                // embed image
+                if(embed.image) {
+                    const embedImage = document.createElement('div');
+                    embedImage.classList.add('chatlog__embed-image-container');
+
+                    const embedImageLink = document.createElement('a');
+                    embedImageLink.classList.add('chatlog__embed-image-link');
+                    embedImageLink.href = embed.image.proxyURL ?? embed.image.url;
+
+                    const embedImageImage = document.createElement('img');
+                    embedImageImage.classList.add('chatlog__embed-image');
+                    embedImageImage.src = embed.image.proxyURL ?? embed.image.url;
+                    embedImageImage.alt = 'Image';
+                    embedImageImage.loading = 'lazy';
+
+                    embedImageLink.appendChild(embedImageImage);
+                    embedImage.appendChild(embedImageLink);
+
+                    embedContentContainer.appendChild(embedImage);
+                } 
+
+                // footer
+                if(embed.footer?.text) {
+                    const embedFooter = document.createElement('div');
+                    embedFooter.classList.add('chatlog__embed-footer');
+
+                    if(embed.footer.iconURL) {
+                        const embedFooterIcon = document.createElement('img');
+                        embedFooterIcon.classList.add('chatlog__embed-footer-icon');
+                        embedFooterIcon.src = embed.footer.proxyIconURL ?? embed.footer.iconURL;
+                        embedFooterIcon.alt = 'Footer icon';
+                        embedFooterIcon.loading = 'lazy';
+
+                        embedFooter.appendChild(embedFooterIcon);
+                    }
+
+                    const embedFooterText = document.createElement('span');
+                    embedFooterText.classList.add('chatlog__embed-footer-text');
+                    embedFooterText.textContent = embed.timestamp ? `${embed.footer.text} • ${new Date(embed.timestamp).toLocaleString()}` : embed.footer.text;
+                    
+                    embedFooter.appendChild(embedFooterText);
+
+                    embedContentContainer.appendChild(embedFooter);
+                }
+
+                embedDiv.appendChild(embedContentContainer);
+                content.appendChild(embedDiv);
+            } 
+        }
+
+        messageGroup.appendChild(content);
+        transcript.appendChild(messageGroup);
+    }
+
+    return new Discord.MessageAttachment(Buffer.from(dom.serialize()), `${channel.name}-transcript.html`);
+}
+
+function formatContent(content, purify=escape) {
+    return purify(content)
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/~~(.+?)~~/g, '<s>$1</s>')
+        .replace(/__(.+?)__/g, '<u>$1</u>')
+        .replace(/```(.+?)```/gs, code => `<div class="pre pre--multiline nohighlight">${code.slice(3, -3).trim()}</div>`)
+        .replace(/`(.+?)`/g, `<span class="pre pre--inline">$1</span>`)
+}
+
+function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }

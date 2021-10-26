@@ -13,13 +13,14 @@
     "captcha-canvas": "^2.3.1",
     "chalk": "^4.1.2",
     "discord.js": "^13.1.0",
+    "dompurify": "^2.3.3",
+    "escape-html": "^1.0.3",
     "figlet": "^1.5.2",
     "fs": "^0.0.1-security",
     "humanize-duration": "^3.27.0",
     "js-yaml": "^3.13.1",
     "jsdom": "^17.0.0",
     "moment-timezone": "^0.5.33",
-    "mongoose": "^6.0.3",
-    "node-yaml-config": "^0.0.6"
+    "mongoose": "^6.0.3"
   }
 }
