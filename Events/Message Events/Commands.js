@@ -27,7 +27,6 @@ bot.on("messageCreate", async (message) => {
 
         if(isNaN(commandfile.help.cooldown) || commandfile.help.cooldown < 500) return commandfile.run(bot, message, args);
         
-        
         CommandCoolDown.set(`${message.author.id}:${commandfile.help.name}`, Date.now() + commandfile.help.cooldown);
 
         commandfile.run(bot, message, args);

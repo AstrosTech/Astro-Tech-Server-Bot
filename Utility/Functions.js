@@ -155,13 +155,17 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
     }
 
     if(user != null) {
+        let AvatarURL;
+        if(user.avatar) AvatarURL = user.avatarURL()
+        else AvatarURL = "https://cdn.discordapp.com/embed/avatars/0.png"
+
         ReplacedMessage = ReplacedMessage
         .replace("{UserID}", user.id)
         .replace("{Username}", user.username)
         .replace("{CreatedOn}", moment(user.createdAt).format('llll'))
         .replace("{UserDiscriminator}", user.discriminator)
         .replace("{UserPing}", user.toString())
-        .replace("{AvatarURL}", user.avatarURL())
+        .replace("{AvatarURL}", AvatarURL)
     }
     let Guild = bot.guilds.cache.get(config.GuildID)
     
@@ -182,7 +186,6 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
 
     
     let regex = /\((.*?)\)/g;
-
     while(found = regex.exec(ReplacedMessage)) {
         let ID = found[1]
 
@@ -215,7 +218,7 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
 }
 
 
-module.exports.EmbedGenerator = (bot, EmbedInformation, Placeholders, User, AvatarURL) => {
+module.exports.EmbedGenerator = (bot, EmbedInformation, Placeholders, User) => {
         let Embed = new Discord.MessageEmbed()
     
         if(EmbedInformation.Title && EmbedInformation.Title.length > 0) Embed.setTitle(exports.Placeholders(bot, EmbedInformation.Title, User, Placeholders))
@@ -232,12 +235,11 @@ module.exports.EmbedGenerator = (bot, EmbedInformation, Placeholders, User, Avat
             }
         }
 
-        let UsersAvatar;
-        
-        if(User) UsersAvatar = User.avatarURL()
-        else UsersAvatar = AvatarURL
+        let AvatarURL;
+        if(user.avatar) AvatarURL = user.avatarURL()
+        else AvatarURL = "https://cdn.discordapp.com/embed/avatars/0.png"
 
-        if(EmbedInformation.Author && EmbedInformation.Author.length > 0) Embed.setAuthor(exports.Placeholders(bot, EmbedInformation.Author, User, Placeholders), UsersAvatar)
+        if(EmbedInformation.Author && EmbedInformation.Author.length > 0) Embed.setAuthor(exports.Placeholders(bot, EmbedInformation.Author, User, Placeholders), AvatarURL)
 
         if(EmbedInformation.Image && EmbedInformation.Image.length > 0) Embed.setImage(exports.Placeholders(bot, EmbedInformation.Image, User, Placeholders))
         if(EmbedInformation.Footer && EmbedInformation.Footer.length > 0) Embed.setFooter(exports.Placeholders(bot, EmbedInformation.Footer, User, Placeholders))
