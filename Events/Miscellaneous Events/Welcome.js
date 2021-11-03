@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const config = require('../../Configuration/YML').LoadConfiguration();
+const config = require('../../Configuration/YML').getConfiguration();
 const functions = require('../../Utility/Functions')
 const WelcomeUtility = require('../../Utility/WelcomeUtility')
 

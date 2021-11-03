@@ -60,7 +60,6 @@
 #       Important Configuration        #
 #                                      #
 ########################################
-LicenseKey: ""
 Token: ODY0MjQ0NDg0ODUzMzM0MDU5.YOyoZg.qjz71XqOQTM5VZ9eO6FiHHSBgWI
 MongoDBURL: mongodb+srv://Astro:VcGRdclAKV42KbNz@cluster0.mejke.mongodb.net/AstroTech?retryWrites=true&w=majority
 Prefix:
@@ -127,6 +126,13 @@ GeneralEmbeds:
     Title: "{ServerName} Help Menu"
     Color: "{ServerColor}"
     Description: "Select the category that corresponds with your command help needs!"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  ConfigReload:
+    Title: "{ServerName} Configuration"
+    Color: "{ServerColor}"
+    Description: "The config has been reloaded."
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"

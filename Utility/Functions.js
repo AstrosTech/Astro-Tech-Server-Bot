@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const config = require('../Configuration/YML').LoadConfiguration();
+const config = require('../Configuration/YML').getConfiguration();
 const moment = require('moment-timezone');
 const chalk = require('chalk')
 const figlet = require('figlet');
@@ -236,7 +236,7 @@ module.exports.EmbedGenerator = (bot, EmbedInformation, Placeholders, User) => {
         }
 
         let AvatarURL;
-        if(user.avatar) AvatarURL = user.avatarURL()
+        if(User && User.avatar) AvatarURL = User.avatarURL()
         else AvatarURL = "https://cdn.discordapp.com/embed/avatars/0.png"
 
         if(EmbedInformation.Author && EmbedInformation.Author.length > 0) Embed.setAuthor(exports.Placeholders(bot, EmbedInformation.Author, User, Placeholders), AvatarURL)

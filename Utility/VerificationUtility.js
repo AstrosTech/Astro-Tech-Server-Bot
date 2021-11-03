@@ -1,4 +1,4 @@
-const config = require("../Configuration/YML").LoadConfiguration();
+const config = require("../Configuration/YML").getConfiguration();
 const { CaptchaGenerator } = require('captcha-canvas');
 const functions = require("./Functions")
 const fs = require('fs');

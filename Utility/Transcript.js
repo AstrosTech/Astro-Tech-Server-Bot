@@ -20,6 +20,11 @@ module.exports.createTranscript = async (channel) => {
     return exports.generateTranscript(messages, channel)
 }
 
+/*
+    Taken from https://github.com/ItzDerock/discord-html-transcripts
+    Thanks <3
+*/
+
 module.exports.generateTranscript = async (messages, channel) => {
     const template = fs.readFileSync('./Configuration/template.html', 'utf8');
 

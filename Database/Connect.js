@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const config = require('../Configuration/YML').LoadConfiguration();
+const config = require('../Configuration/YML').getConfiguration();
 const chalk = require('chalk')
 
 async function LoadDatabase() {

@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const functions = require('../../Utility/Functions')
-const config = require('../../Configuration/YML').LoadConfiguration();
+const config = require('../../Configuration/YML').getConfiguration();
 const SuggestionDatabase = require('../../Database/Models/SuggestionsModel')
 
 module.exports.run = async (bot, message, args) => {

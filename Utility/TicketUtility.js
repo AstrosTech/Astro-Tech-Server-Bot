@@ -1,4 +1,4 @@
-const config = require('../Configuration/YML').LoadConfiguration();
+const config = require('../Configuration/YML').getConfiguration();
 const Discord = require('discord.js');
 const functions = require('./Functions')
 
