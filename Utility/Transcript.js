@@ -73,7 +73,7 @@ module.exports.generateTranscript = async (messages, channel) => {
             const reference = document.createElement('div');
             reference.classList.add('chatlog__reference');
 
-            const referencedMessage = messages instanceof discord.Collection ? messages.get(message.reference.messageId) : messages.find(m => m.id === message.reference.messageId);
+            const referencedMessage = messages instanceof Discord.Collection ? messages.get(message.reference.messageId) : messages.find(m => m.id === message.reference.messageId);
             const author = referencedMessage.author ?? static.DummyUser;
 
             reference.innerHTML = 
