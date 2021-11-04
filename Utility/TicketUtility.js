@@ -149,7 +149,7 @@ module.exports.AutomatedTicketQuestions = async (bot, TicketCategory, TicketChan
     let Staff = []
     for(StaffIDS of TicketCategory.StaffIDs) {
         let StaffRole = await bot.guilds.cache.get(config.GuildID).roles.cache.find(role => role.id == StaffIDS)
-        if(!StaffRole) return
+        if(!StaffRole) continue
         
         await TicketChannel.permissionOverwrites.edit(StaffRole, { VIEW_CHANNEL: true });
 
