@@ -13,8 +13,8 @@ bot.on("messageCreate", async (message) => {
         let args = messageArray.slice(1);
 
         if(!config.Prefix.some(prefix => message.content.startsWith(prefix))) return
-
-        if(config.BlockCommandsChannelIDS.some(Channel => Channel == message.channel.id)) return message.react('❌').catch(err => { return })
+        
+        if(config.BlockCommandsChannelIDS && config.BlockCommandsChannelIDS.length < 0 && config.BlockCommandsChannelIDS.some(Channel => Channel == message.channel.id)) return message.react('❌').catch(err => { return })
 
         let commandfile = bot.commands.get(cmd.slice(1)) || bot.commands.get(bot.aliases.get(cmd.slice(1)))
         if(!commandfile) return
