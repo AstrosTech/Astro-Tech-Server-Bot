@@ -10,7 +10,7 @@ const load = dirs => {
                 if(props.help.enabled == false) continue
 
                 bot.commands.set(props.help.name, props);
-                props.help.aliases.forEach(alias => { bot.aliases.set(alias, props.help.name) });
+                if(props.help.aliases && props.help.aliases.length < 0) props.help.aliases.forEach(alias => { bot.aliases.set(alias, props.help.name) });
             }
         };
         
