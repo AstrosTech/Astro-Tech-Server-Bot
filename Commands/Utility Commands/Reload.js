@@ -1,9 +1,8 @@
 const functions = require('../../Utility/Functions')
 const CommandHelp = require('../../Configuration/YML').LoadCommandConfiguration();
-
 module.exports.run = async (bot, message, args) => {
     
-    require('../../Configuration/YML').LoadConfiguration()
+    let config = require('../../Configuration/YML').LoadConfiguration()
 
     message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.ConfigReload, null, message.author)] }).catch(err => { return })
 }
