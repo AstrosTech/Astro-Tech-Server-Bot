@@ -60,8 +60,8 @@
 #       Important Configuration        #
 #                                      #
 ########################################
-Token: ODY0MjQ0NDg0ODUzMzM0MDU5.YOyoZg.qjz71XqOQTM5VZ9eO6FiHHSBgWI
-MongoDBURL: mongodb+srv://Astro:VcGRdclAKV42KbNz@cluster0.mejke.mongodb.net/AstroTech?retryWrites=true&w=majority
+Token: 
+MongoDBURL:
 Prefix:
   - "."
   - "-"
@@ -129,6 +129,13 @@ GeneralEmbeds:
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
+  HelpPages: #{HelpInformation}
+    Title: "{ServerName} Help Menu"
+    Color: "{ServerColor}"
+    Description: "{HelpInformation}"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
   ConfigReload:
     Title: "{ServerName} Configuration"
     Color: "{ServerColor}"
@@ -173,7 +180,7 @@ ExampleEmbed:
 TicketsEnabled: true
 TicketChannelID: "882695643531976714"
 TicketMessageID: "883163456453378109"
-TicketLogChannelID: "890507314476494929"
+TicketLogChannelID: "879477719556055041"
 TicketButton:
   Label: Create Ticket!
   Style: PRIMARY

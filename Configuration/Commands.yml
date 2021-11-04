@@ -135,7 +135,6 @@ SuggestionCommands:
     description: "Add Suggestions"
     usage: "suggest <category> <suggestion>"
     aliases:
-      -
     permissions:
       - "ADMINISTRATOR"
       - "183340750422016001"
@@ -149,7 +148,6 @@ SuggestionCommands:
     description: "Approve Suggestions"
     usage: "approve <message id> <reason>"
     aliases:
-      -
     permissions:
       - "ADMINISTRATOR"
       - "183340750422016001"
@@ -162,7 +160,6 @@ SuggestionCommands:
     description: "Denies Suggestions"
     usage: "deny <message id> <reason>"
     aliases:
-      -
     permissions:
       - "ADMINISTRATOR"
       - "183340750422016001"
@@ -191,7 +188,7 @@ UtilityCommands:
       - "ADMINISTRATOR"
       - "183340750422016001"
       - "865701485613547541"
-    cooldown: 120000
+    cooldown: 0
     enabled: true
   CommandInfo:
     name: "commandinfo"
@@ -207,10 +204,21 @@ UtilityCommands:
     enabled: true
   Announce:
     name: "announce"
-    description: "Provides information about commands"
+    description: "Creates Announcement"
     usage: "announce <type (embed, message)> <channel>"
     aliases:
       - "say"
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+  Reload:
+    name: "reload"
+    description: "Reloads Configuration"
+    usage: "reload"
+    aliases:
     permissions:
       - "ADMINISTRATOR"
       - "183340750422016001"

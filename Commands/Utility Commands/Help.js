@@ -26,7 +26,7 @@ module.exports.run = async (bot, message, args) => {
     }
 
     row.addComponents(DropDownMenu)
-
+    
     let MenuMessage = await message.channel.send({ embeds:[functions.EmbedGenerator(bot, config.GeneralEmbeds.FrontPageHelp, null, message.author)], components: [row] })
 
     let MenuFilter = (interaction) => { interaction.user.id === message.author.id; return row }
