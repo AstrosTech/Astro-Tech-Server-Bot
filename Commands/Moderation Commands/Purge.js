@@ -2,18 +2,17 @@ const config = require('../../Configuration/YML').getConfiguration();
 const functions = require('../../Utility/Functions')
 
 module.exports.run = async (bot, message, args) => {
-    let KickedMember = message.mentions.members.first() || message.guild.members.cache.get(args[0])
-    if(!KickedMember) return functions.InsufficientUsage(bot, message.guild, exports.help, message.author, message.channel)
-    
-    if(KickedMember.roles.highest.rawPosition >= message.member.roles.highest.rawPosition && message.author.id != message.guild.ownerId) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.Errors, [`{Error}:${KickedMember.toString()} Has a higher or equal role to you.`], message.author)] })
-
     let NumberOfMessages = args[0]
     if(!NumberOfMessages) return functions.InsufficientUsage(bot, message.guild, exports.help, message.author, message.channel)
 
-    if(!functions.isNumeric(NumberOfMessages)) return functions.InsufficientUsage(bot, message.guild, exports.help, message.author, message.channel)
+    if(isNaN(NumberOfMessages)) return functions.InsufficientUsage(bot, message.guild, exports.help, message.author, message.channel)
     if(NumberOfMessages > 100 || NumberOfMessages < 2) return functions.InsufficientUsage(bot, message.guild, exports.help, message.author, message.channel)
 
-    
+    await message.channel.bulkDelete(NumberOfMessages).catch(err => { return })
+
+    let CompleteMessage = await message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.ModerationEmbeds.SuccessfulPurge, [`{NumberOfMessages}:${NumberOfMessages}`], message.author)] })
+
+    setTimeout(() => { CompleteMessage.delete().catch(err => { return } )}, 5000);
 }
 
 const CommandHelp = require('../../Configuration/YML').LoadCommandConfiguration();

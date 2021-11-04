@@ -53,7 +53,7 @@
 #############################################
 #
 # You also have the ability to add any Channel, Member, Custom Emoji, or Role ping to any embed.
-# To do so all you need to do is put the ID in brackets. Example: [183340750422016001]
+# To do so all you need to do is put the ID in parenthesis. Example: (183340750422016001)
 
 ########################################
 #                                      #
@@ -61,7 +61,7 @@
 #                                      #
 ########################################
 Token: 
-MongoDBURL:
+MongoDBURL: 
 Prefix:
   - "."
   - "-"
@@ -729,6 +729,13 @@ ModerationEmbeds:
     Title: "{ServerName} Moderation"
     Color: "{ServerColor}"
     Description: "{KickedMemberUsername}#{KickedMemberDiscriminantor} ({KickedMemberID}) has been successfully kicked."
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  SuccessfulPurge:
+    Title: "{ServerName} Moderation"
+    Color: "{ServerColor}"
+    Description: "Successfully purged {NumberOfMessages}\n\nPurged by {UserPing} ({Username}#{UserDiscriminator})"
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
