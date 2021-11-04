@@ -5,16 +5,16 @@ module.exports.run = async (bot, message, args) => {
     
     require('../../Configuration/YML').LoadConfiguration()
 
-    message.channel.send({ embeds: [functions.EmbedGenerator(bot, )] })
+    message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.ConfigReload, null, message.author)] }).catch(err => { return })
 }
 
 
 module.exports.help = {
-    name: CommandHelp.UtilityCommands.Help.name,
-    description: CommandHelp.UtilityCommands.Help.description,
-    usage: CommandHelp.UtilityCommands.Help.usage,
-    aliases: CommandHelp.UtilityCommands.Help.aliases,
-    permissions: CommandHelp.UtilityCommands.Help.permissions,
-    cooldown: CommandHelp.UtilityCommands.Help.cooldown,
-    enabled: CommandHelp.UtilityCommands.Help.enabled
+    name: CommandHelp.UtilityCommands.Reload.name,
+    description: CommandHelp.UtilityCommands.Reload.description,
+    usage: CommandHelp.UtilityCommands.Reload.usage,
+    aliases: CommandHelp.UtilityCommands.Reload.aliases,
+    permissions: CommandHelp.UtilityCommands.Reload.permissions,
+    cooldown: CommandHelp.UtilityCommands.Reload.cooldown,
+    enabled: CommandHelp.UtilityCommands.Reload.enabled
 }
