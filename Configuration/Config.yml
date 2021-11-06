@@ -745,7 +745,14 @@ ModerationEmbeds:
   SucessfullyLocked:
     Title: "{ServerName} Moderation"
     Color: "{ServerColor}"
-    Description: "{Channel} has been locked by {UserPing} ({Username}#{UserDiscriminator})\n\nPlease wait "
+    Description: "{Channel} has been locked by {UserPing} ({Username}#{UserDiscriminator})\n\nPlease wait for the issue to be resolved."
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  SucessfullyUnLocked:
+    Title: "{ServerName} Moderation"
+    Color: "{ServerColor}"
+    Description: "{Channel} has been unlocked by {UserPing} ({Username}#{UserDiscriminator})\n\nThank you for your patience."
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"

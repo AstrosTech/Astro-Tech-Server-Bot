@@ -12,7 +12,7 @@ module.exports.run = async (bot, message, args) => {
         await message.channel.permissionOverwrites.edit(FoundRole, { SEND_MESSAGES: null }).catch(err => { return })
     }
 
-    await message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.ModerationEmbeds.SucessfullyLocked, [`{Channel}:${message.channel.toString()}`], message.author)] })
+    await message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.ModerationEmbeds.SucessfullyUnLocked, [`{Channel}:${message.channel.toString()}`], message.author)] })
 }
 
 const CommandHelp = require('../../Configuration/YML').LoadCommandConfiguration();
