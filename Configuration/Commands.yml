@@ -242,7 +242,6 @@ ModerationCommands:
     description: "Bans users from the Discord"
     usage: "ban <user> [reason]"
     aliases:
-      -
     permissions:
       - "ADMINISTRATOR"
       - "183340750422016001"
@@ -254,7 +253,6 @@ ModerationCommands:
     description: "Kicks users from the Discord"
     usage: "kick <user> [reason]"
     aliases:
-      -
     permissions:
       - "ADMINISTRATOR"
       - "183340750422016001"
@@ -266,7 +264,28 @@ ModerationCommands:
     description: "Purges Messages from the Discord"
     usage: "purge <amount> [user]"
     aliases:
-      -
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+  Lock:
+    name: "lock"
+    description: "Locks Channels"
+    usage: "lock"
+    aliases:
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+  UnLock:
+    name: "unlock"
+    description: "UnLocks Channels"
+    usage: "Unlock"
+    aliases:
     permissions:
       - "ADMINISTRATOR"
       - "183340750422016001"

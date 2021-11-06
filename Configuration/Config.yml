@@ -60,8 +60,8 @@
 #       Important Configuration        #
 #                                      #
 ########################################
-Token: ODY0MjQ0NDg0ODUzMzM0MDU5.YOyoZg.3Hd76Cun2cqZxJyHqDO4OqMIcGI
-MongoDBURL: mongodb+srv://Astro:VcGRdclAKV42KbNz@cluster0.mejke.mongodb.net/AstroTech?retryWrites=true&w=majority
+Token: 
+MongoDBURL: 
 Prefix:
   - "."
   - "-"
@@ -716,7 +716,10 @@ ReactRoleEmbeds:
 #                                      #
 ########################################
 
-
+ChannelLockRoleIDS:
+  - "866055108399595560"
+  - "865701485613547541"
+  
 ModerationEmbeds:
   SuccessfulBan: #{BannedMemberUsername}, {BannedMemberDiscriminantor}, {BannedMemberID}
     Title: "{ServerName} Moderation"
@@ -736,6 +739,13 @@ ModerationEmbeds:
     Title: "{ServerName} Moderation"
     Color: "{ServerColor}"
     Description: "Successfully purged {NumberOfMessages}\n\nPurged by {UserPing} ({Username}#{UserDiscriminator})"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  SucessfullyLocked:
+    Title: "{ServerName} Moderation"
+    Color: "{ServerColor}"
+    Description: "{Channel} has been locked by {UserPing} ({Username}#{UserDiscriminator})\n\nPlease wait "
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
