@@ -61,8 +61,13 @@ module.exports.TicketCategorySelection = async (bot, TicketChannel, User) => {
     let DropDownMenu = new Discord.MessageSelectMenu()
     .setCustomId(`${TicketChannel}-TicketCategorySelection`)
     .setPlaceholder(config.TicketDropDownMenu.PlaceHolder)
+    
+    let CategoriesLength = Object.keys(config.TicketCategories).length
+    if(CategoriesLength == 0)
+    console.log(CategoriesLength)
+    if(CategoriesLength == 1) return Object.keys(config.TicketCategories)[0]
 
-    for (let i = 0; i < Object.keys(config.TicketCategories).length; i++) {
+    for (let i = 0; i < CategoriesLength; i++) {
         let TicketCategoryName = Object.keys(config.TicketCategories)[i];
         let TicketCategory = config.TicketCategories[TicketCategoryName];
         
