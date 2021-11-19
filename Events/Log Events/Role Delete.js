@@ -8,6 +8,6 @@ module.exports = bot => {
         let LogsChannel = role.guild.channels.cache.find(channel => channel.id == config.Logs.RoleDelete.ChannelID)
         if(!LogsChannel) return functions.LogToConsole('Logs.MessageUpdate.ChannelID set incorrectly.')
             
-        await LogsChannel.send({ embeds: [ functions.EmbedGenerator(bot, config.Logs.RoleDelete.Embed, [`{RoleName}:${role.name}`, `{RoleID}:${role.id}`, `{RoleColor}:${role.color}`, `{RolePosition}:${role.rawPosition}`], null)] })
+        await LogsChannel.send({ embeds: [ functions.EmbedGenerator(bot, config.Logs.RoleDelete.Embed, [`{RoleName}---${role.name}`, `{RoleID}---${role.id}`, `{RoleColor}---${role.color}`, `{RolePosition}---${role.rawPosition}`], null)] })
     })
 }

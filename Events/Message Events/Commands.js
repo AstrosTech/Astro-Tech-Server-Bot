@@ -23,7 +23,7 @@ bot.on("messageCreate", async (message) => {
         if(!Verified) return functions.InsufficientPermissions(bot, message.guild, commandfile.help, message.author, message.channel)
 
         let UsersCooldown = CommandCoolDown.has(`${message.author.id}:${commandfile.help.name}`)
-        if(UsersCooldown) return message.channel.send({ embeds: [ functions.EmbedGenerator(bot, config.GeneralEmbeds.OnCooldown, [`{Command}:${commandfile.help.name}`, `{Cooldown}:${Duration(CommandCoolDown.get(`${message.author.id}:${commandfile.help.name}`) - Date.now(), { units: ['h', 'm', 's'], round: true })}`])] })
+        if(UsersCooldown) return message.channel.send({ embeds: [ functions.EmbedGenerator(bot, config.GeneralEmbeds.OnCooldown, [`{Command}---${commandfile.help.name}`, `{Cooldown}---${Duration(CommandCoolDown.get(`${message.author.id}:${commandfile.help.name}`) - Date.now(), { units: ['h', 'm', 's'], round: true })}`])] })
 
         if(isNaN(commandfile.help.cooldown) || commandfile.help.cooldown < 500) return commandfile.run(bot, message, args);
         

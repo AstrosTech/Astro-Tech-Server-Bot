@@ -15,11 +15,11 @@ module.exports = bot => {
         let MemberRoleCheck = interaction.member.roles.cache.find(roles => roles.id == Role.id)
         if(MemberRoleCheck) {
             await interaction.member.roles.remove(Role).catch(err => { console.error(err) })
-            return await interaction.reply({ ephemeral: true, embeds: [ functions.EmbedGenerator(bot, config.ReactRoleEmbeds.RemovedRoles, [`{RemovedRole}:${Role.toString()}`, `{ButtonLabel}:${ReactRole.ButtonLabel}`], interaction.user)] })
+            return await interaction.reply({ ephemeral: true, embeds: [ functions.EmbedGenerator(bot, config.ReactRoleEmbeds.RemovedRoles, [`{RemovedRole}---${Role.toString()}`, `{ButtonLabel}---${ReactRole.ButtonLabel}`], interaction.user)] })
         }
         
         await interaction.member.roles.add(Role).catch(err => { console.error(err) })
-        return await interaction.reply({ ephemeral: true, embeds: [ functions.EmbedGenerator(bot, config.ReactRoleEmbeds.GivenRoles, [`{GivenRole}:${Role.toString()}`, `{ButtonLabel}:${ReactRole.ButtonLabel}`], interaction.user)] })
+        return await interaction.reply({ ephemeral: true, embeds: [ functions.EmbedGenerator(bot, config.ReactRoleEmbeds.GivenRoles, [`{GivenRole}---${Role.toString()}`, `{ButtonLabel}---${ReactRole.ButtonLabel}`], interaction.user)] })
         
     })
 }

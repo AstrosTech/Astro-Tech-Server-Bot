@@ -46,7 +46,7 @@ module.exports.run = async (bot, message, args) => {
             CommandDescriptions += `> **${message.content[0]}${Command.name}** • ${Command.description}\n`
         }
         
-        await MenuMessage.edit({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.HelpPages, [`{HelpInformation}:${CommandDescriptions}`], message.author)] })
+        await MenuMessage.edit({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.HelpPages, [`{HelpInformation}---${CommandDescriptions}`], message.author)] })
     })
 }
 

@@ -11,6 +11,6 @@ module.exports = bot => {
         let LogsChannel = messageDelete.guild.channels.cache.find(channel => channel.id == config.Logs.MessageDelete.ChannelID)
         if(!LogsChannel) return functions.LogToConsole('Logs.MessageDelete.ChannelID set incorrectly.')
 
-        await LogsChannel.send({ embeds: [ functions.EmbedGenerator(bot, config.Logs.MessageDelete.Embed, [`{Channel}:${messageDelete.channel.toString()}`, `{Content}:${messageDelete.content}`], messageDelete.author)] })
+        await LogsChannel.send({ embeds: [ functions.EmbedGenerator(bot, config.Logs.MessageDelete.Embed, [`{Channel}---${messageDelete.channel.toString()}`, `{Content}---${messageDelete.content}`], messageDelete.author)] })
     })
 }

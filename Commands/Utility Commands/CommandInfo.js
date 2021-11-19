@@ -9,7 +9,7 @@ module.exports.run = async (bot, message, args) => {
     if(!SuppliedCommand) return functions.InsufficientUsage(bot, message.guild, exports.help, message.author, message.channel)
 
     let Command = bot.commands.get(SuppliedCommand) || bot.commands.get(bot.aliases.get(SuppliedCommand))
-    if(!Command) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.Errors, [`{Error}:Invalid Command Provided`], message.author)]})
+    if(!Command) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.Errors, [`{Error}---Invalid Command Provided`], message.author)]})
 
     return functions.CommandInfo(bot, message.guild, Command.help, message.author, message.channel)
 }

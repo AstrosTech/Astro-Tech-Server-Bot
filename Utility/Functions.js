@@ -129,7 +129,7 @@ module.exports.SetupSuggestions = async (bot, Guild) => {
     let DeniedChannel = Guild.channels.cache.find(channel => channel.id == config.SuggestionChannelIDS.Pending)
     if(!DeniedChannel) exports.LogToConsole('SuggestionChannelIDS.Pending set incorrectly in the configuration. Cannot deny suggestions')
 
-    let SuggestionMessage = await SuggestionChannel.send({ embeds: [exports.EmbedGenerator(bot, config.SuggestionEmbeds.SuggestionRulesEmbed, [`{PendingChannel}:${PendingChannel.toString()}`, `{ApprovedChannel}:${ApprovedChannel.toString()}`, `{DeniedChannel}:${DeniedChannel.toString()}`])] })
+    let SuggestionMessage = await SuggestionChannel.send({ embeds: [exports.EmbedGenerator(bot, config.SuggestionEmbeds.SuggestionRulesEmbed, [`{PendingChannel}---${PendingChannel.toString()}`, `{ApprovedChannel}---${ApprovedChannel.toString()}`, `{DeniedChannel}---${DeniedChannel.toString()}`])] })
     SuggestionMessageID = SuggestionMessage.id
 }
 
@@ -148,8 +148,7 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
             let Placeholder = placeholders[i]
 
             let SplitPlaceholders;
-            if(Placeholder.includes('--')) SplitPlaceholders = Placeholder.split('--');
-            else SplitPlaceholders = Placeholder.split(":")
+            SplitPlaceholders = Placeholder.split('---');
             ReplacedMessage = ReplacedMessage.replace(SplitPlaceholders[0], SplitPlaceholders[1])
         }
     }
@@ -299,21 +298,21 @@ module.exports.InsufficientPermissions = async (bot, Guild, Help, User, Channel)
     if(!Help.aliases[0]) Help.aliases = "No aliases"
     if(Permissions.length > 1) Permissions = "No Permissions Provided"
     
-    Channel.send({ embeds: [exports.EmbedGenerator(bot, config.GeneralEmbeds.InsufficientPermission, [`{Command}:${Help.name}`, `{Description}:${Help.description}`, `{Usage}:${Help.usage}`, `{Aliases}:${Help.aliases}`, `{Permissions}:${Permissions}`], User)] })
+    Channel.send({ embeds: [exports.EmbedGenerator(bot, config.GeneralEmbeds.InsufficientPermission, [`{Command}---${Help.name}`, `{Description}---${Help.description}`, `{Usage}---${Help.usage}`, `{Aliases}---${Help.aliases}`, `{Permissions}---${Permissions}`], User)] })
 }
 
 module.exports.InsufficientUsage = async (bot, Guild, Help, User, Channel) => {
-    if(Help.usage.length < 1) Help.usage = "No Usage Provided."
-    if(Help.description.length < 1) Help.description = "No Description Provided"
-    if(!Help.aliases[0]) Help.aliases = "No aliases"
+    if(!Help.usage || Help.usage.length < 1) Help.usage = "No Usage Provided."
+    if(!Help.description || Help.description.length < 1) Help.description = "No Description Provided"
+    if(!Help.aliases || Help.aliases.length < 1) Help.aliases = "No aliases"
     
-    Channel.send({ embeds: [exports.EmbedGenerator(bot, config.GeneralEmbeds.InsufficientUsage, [`{Command}:${Help.name}`, `{Description}:${Help.description}`, `{Usage}:${Help.usage}`, `{Aliases}:${Help.aliases}`], User)] })
+    Channel.send({ embeds: [exports.EmbedGenerator(bot, config.GeneralEmbeds.InsufficientUsage, [`{Command}---${Help.name}`, `{Description}---${Help.description}`, `{Usage}---${Help.usage}`, `{Aliases}---${Help.aliases}`], User)] })
 }
 
 module.exports.CommandInfo = async (bot, Guild, Help, User, Channel) => {
-    if(Help.usage.length < 1) Help.usage = "No Usage Provided."
-    if(Help.description.length < 1) Help.description = "No Description Provided"
-    if(!Help.aliases[0]) Help.aliases = "No aliases"
+    if(!Help.usage || Help.usage.length < 1) Help.usage = "No Usage Provided."
+    if(!Help.description || Help.description.length < 1) Help.description = "No Description Provided"
+    if(!Help.aliases || Help.aliases.length < 1) Help.aliases = "No aliases"
     
     let Permissions = []
 
@@ -333,5 +332,5 @@ module.exports.CommandInfo = async (bot, Guild, Help, User, Channel) => {
         Permissions.push(Permission)
     }
 
-    Channel.send({ embeds: [exports.EmbedGenerator(bot, config.GeneralEmbeds.CommandInfo, [`{Command}:${Help.name}`, `{Description}:${Help.description}`, `{Usage}:${Help.usage}`, `{Aliases}:${Help.aliases}`, `{Permissions}:${Permissions}`], User)] })
+    Channel.send({ embeds: [exports.EmbedGenerator(bot, config.GeneralEmbeds.CommandInfo, [`{Command}---${Help.name}`, `{Description}---${Help.description}`, `{Usage}---${Help.usage}`, `{Aliases}---${Help.aliases}`, `{Permissions}---${Permissions}`], User)] })
 }

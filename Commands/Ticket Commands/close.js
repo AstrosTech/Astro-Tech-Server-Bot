@@ -3,7 +3,7 @@ const functions = require('../../Utility/Functions')
 const TranscriptUtility = require('../../Utility/Transcript') 
 
 module.exports.run = async (bot, message, args) => {
-    if(!message.channel.name.startsWith("ticket")) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.NotATicketChannel, [`{Command}:${exports.help.name}`], message.author)] })
+    if(!message.channel.name.startsWith("ticket")) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.NotATicketChannel, [`{Command}---${exports.help.name}`], message.author)] })
 
     let Reason = args.slice(0).join(" ")
     if(!Reason) Reason = "Reason Not Provided."
@@ -32,8 +32,8 @@ module.exports.run = async (bot, message, args) => {
     }
     
     let Transcript = await TranscriptUtility.createTranscript(message.channel);
-    await TicketLogChannel.send({ embeds: [ functions.EmbedGenerator(bot, config.TicketEmbeds.ClosedTicket, [`{LastFiveMessages}:${LastFiveMessages.map(m => m.content.toString()).join("\n")}`, `{TicketChannel}:${message.channel.name}`, `{TicketCreatorPing}:${TicketUserPing}`, `{TicketUserTag}:${TicketUserDiscriminator}`, `{Reason}:${Reason}` ], message.author) ], files: [Transcript] })
-    if(TicketMember) await TicketMember.send({ embeds: [ functions.EmbedGenerator(bot, config.TicketEmbeds.ClosedTicket, [`{LastFiveMessages}:${LastFiveMessages.map(m => m.content.toString()).join("\n")}`, `{TicketChannel}:${message.channel.name}`, `{TicketCreatorPing}:${TicketUserPing}`, `{TicketUserTag}:${TicketUserDiscriminator}`, `{Reason}:${Reason}` ], message.author) ], files: [Transcript] })
+    await TicketLogChannel.send({ embeds: [ functions.EmbedGenerator(bot, config.TicketEmbeds.ClosedTicket, [`{LastFiveMessages}---${LastFiveMessages.map(m => m.content.toString()).join("\n")}`, `{TicketChannel}---${message.channel.name}`, `{TicketCreatorPing}---${TicketUserPing}`, `{TicketUserTag}---${TicketUserDiscriminator}`, `{Reason}---${Reason}` ], message.author) ], files: [Transcript] })
+    if(TicketMember) await TicketMember.send({ embeds: [ functions.EmbedGenerator(bot, config.TicketEmbeds.ClosedTicket, [`{LastFiveMessages}---${LastFiveMessages.map(m => m.content.toString()).join("\n")}`, `{TicketChannel}---${message.channel.name}`, `{TicketCreatorPing}---${TicketUserPing}`, `{TicketUserTag}---${TicketUserDiscriminator}`, `{Reason}---${Reason}` ], message.author) ], files: [Transcript] })
 
     await message.channel.delete().catch(err => { return })
 }

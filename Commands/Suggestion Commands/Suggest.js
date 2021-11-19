@@ -4,7 +4,7 @@ const config = require('../../Configuration/YML').getConfiguration();
 const SuggestionDatabase = require('../../Database/Models/SuggestionsModel')
 
 module.exports.run = async (bot, message, args) => {
-    if(config.SuggestionCreateChannel.Enabled && message.channel.id != config.SuggestionCreateChannel.SuggestChannelID) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.SuggestionEmbeds.OnlySuggestionChannel, [`{PendingChannel}:${message.guild.channels.cache.find(channel => channel.id == config.SuggestionChannelIDS.Pending).toString()}`], message.author)] })
+    if(config.SuggestionCreateChannel.Enabled && message.channel.id != config.SuggestionCreateChannel.SuggestChannelID) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.SuggestionEmbeds.OnlySuggestionChannel, [`{PendingChannel}---${message.guild.channels.cache.find(channel => channel.id == config.SuggestionChannelIDS.Pending).toString()}`], message.author)] })
     let Category = args[0]
     if(!Category) return functions.InsufficientUsage(bot, message.guild, exports.help, message.author, message.channel)
 
@@ -12,12 +12,12 @@ module.exports.run = async (bot, message, args) => {
     if(!Suggestion) return functions.InsufficientUsage(bot, message.guild, exports.help, message.author, message.channel)
 
     
-    if(!config.SuggestionCategories.some(Categories => Categories.toLowerCase() == Category.toLowerCase())) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.SuggestionEmbeds.InvalidCategory, [`{Categories}:${config.SuggestionCategories.join("\n")}`])] })
+    if(!config.SuggestionCategories.some(Categories => Categories.toLowerCase() == Category.toLowerCase())) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.SuggestionEmbeds.InvalidCategory, [`{Categories}---${config.SuggestionCategories.join("\n")}`])] })
 
     let PendingChannel = message.guild.channels.cache.find(channel => channel.id == config.SuggestionChannelIDS.Pending)
-    if(!PendingChannel) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.Errors, [`{Error}:Pending Channel set incorrectly in the configuration`], message.author)] })
+    if(!PendingChannel) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.Errors, [`{Error}---Pending Channel set incorrectly in the configuration`], message.author)] })
 
-    let SuggestionMessage = await PendingChannel.send({ embeds: [functions.EmbedGenerator(bot, config.SuggestionEmbeds.PendingSuggestion, [`{Suggestion}:${Suggestion}`, `{Category}:${Category.toUpperCase()}`], message.author)] })
+    let SuggestionMessage = await PendingChannel.send({ embeds: [functions.EmbedGenerator(bot, config.SuggestionEmbeds.PendingSuggestion, [`{Suggestion}---${Suggestion}`, `{Category}---${Category.toUpperCase()}`], message.author)] })
     
 
     await SuggestionMessage.react('👍')
@@ -26,7 +26,7 @@ module.exports.run = async (bot, message, args) => {
     const NewSuggestion = new SuggestionDatabase({ UserID: message.author.id, MessageID: SuggestionMessage.id, Suggestion: Suggestion, Category: Category })
     await NewSuggestion.save()
 
-    await message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.SuggestionEmbeds.SuccessfulSuggestion, [`{Suggestion}:${Suggestion}`, `{PendingChannel}:${PendingChannel.toString()}`])]})
+    await message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.SuggestionEmbeds.SuccessfulSuggestion, [`{Suggestion}---${Suggestion}`, `{PendingChannel}---${PendingChannel.toString()}`])]})
 }
 
 const CommandHelp = require('../../Configuration/YML').LoadCommandConfiguration();

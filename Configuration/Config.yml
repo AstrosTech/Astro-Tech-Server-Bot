@@ -60,8 +60,8 @@
 #       Important Configuration        #
 #                                      #
 ########################################
-Token: 
-MongoDBURL: 
+Token: ODY0MjQ0NDg0ODUzMzM0MDU5.YOyoZg.x5m7Occ2Du4ybzx-KxeOgfOTGXo
+MongoDBURL: mongodb+srv://Astro:VcGRdclAKV42KbNz@cluster0.mejke.mongodb.net/AstroTech?retryWrites=true&w=majority
 Prefix:
   - "."
   - "-"
@@ -742,14 +742,14 @@ ModerationEmbeds:
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
-  SucessfullyLocked:
+  SucessfullyLocked: #{Channel}
     Title: "{ServerName} Moderation"
     Color: "{ServerColor}"
     Description: "{Channel} has been locked by {UserPing} ({Username}#{UserDiscriminator})\n\nPlease wait for the issue to be resolved."
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
-  SucessfullyUnLocked:
+  SucessfullyUnLocked: #{Channel}
     Title: "{ServerName} Moderation"
     Color: "{ServerColor}"
     Description: "{Channel} has been unlocked by {UserPing} ({Username}#{UserDiscriminator})\n\nThank you for your patience."

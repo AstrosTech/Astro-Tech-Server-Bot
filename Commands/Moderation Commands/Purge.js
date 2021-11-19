@@ -10,7 +10,7 @@ module.exports.run = async (bot, message, args) => {
 
     await message.channel.bulkDelete(NumberOfMessages).catch(err => { return })
 
-    let CompleteMessage = await message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.ModerationEmbeds.SuccessfulPurge, [`{NumberOfMessages}:${NumberOfMessages}`], message.author)] })
+    let CompleteMessage = await message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.ModerationEmbeds.SuccessfulPurge, [`{NumberOfMessages}---${NumberOfMessages}`], message.author)] })
 
     setTimeout(() => { CompleteMessage.delete().catch(err => { return } )}, 5000);
 }

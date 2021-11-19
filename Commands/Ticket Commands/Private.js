@@ -2,7 +2,7 @@ const config = require('../../Configuration/YML').getConfiguration();
 const functions = require('../../Utility/Functions')
 
 module.exports.run = async (bot, message, args) => {
-    if(!message.channel.name.startsWith("ticket")) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.NotATicketChannel, [`{Command}:${exports.help.name}`], message.author)] })
+    if(!message.channel.name.startsWith("ticket")) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.NotATicketChannel, [`{Command}---${exports.help.name}`], message.author)] })
 
     let ChannelPermissions = [...message.channel.permissionOverwrites.cache.values()]
     for(Permission of ChannelPermissions) {
@@ -10,7 +10,7 @@ module.exports.run = async (bot, message, args) => {
         await message.channel.permissionOverwrites.edit(Permission.id, { VIEW_CHANNEL: false });
     }
 
-    message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.PrivatizedTicket, [`{TicketChannel}:${message.channel.toString()}`], message.author)] })
+    message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.PrivatizedTicket, [`{TicketChannel}---${message.channel.toString()}`], message.author)] })
 }
 
 

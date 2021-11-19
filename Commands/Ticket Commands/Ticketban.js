@@ -8,13 +8,13 @@ module.exports.run = async (bot, message, args) => {
     if(!BannedUser) return functions.InsufficientUsage(bot, message.guild, exports.help, message.author, message.channel)
 
     let AlreadyBanCheck = await TicketBanDatabase.findOne({ UserID: BannedUser.user.id, Active: true })
-    if(AlreadyBanCheck) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.Errors, [`{Error}:${BannedUser.toString()} is already Ticket Banned!`], message.author)] })
+    if(AlreadyBanCheck) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.Errors, [`{Error}---${BannedUser.toString()} is already Ticket Banned!`], message.author)] })
 
 
     const TicketBanUser = new TicketBanDatabase({ UserID: BannedUser.user.id, BannedByID: message.author.id })
     await TicketBanUser.save()
 
-    message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SuccessfulTicketBan, [`{TicketBanned}:${BannedUser.toString()}`, `{BannedBy}:${message.member.toString()}`], message.author)] })
+    message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SuccessfulTicketBan, [`{TicketBanned}---${BannedUser.toString()}`, `{BannedBy}---${message.member.toString()}`], message.author)] })
 }
 
 const CommandHelp = require('../../Configuration/YML').LoadCommandConfiguration();

@@ -2,7 +2,7 @@ const config = require('../../Configuration/YML').getConfiguration();
 const functions = require('../../Utility/Functions')
 
 module.exports.run = async (bot, message, args) => {
-    if(!config.ChannelLockRoleIDS || config.ChannelLockRoleIDS.length < 1) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.Errors, [`{Error}:ChannelLockRoleIDS has no role IDS`])]})
+    if(!config.ChannelLockRoleIDS || config.ChannelLockRoleIDS.length < 1) return message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.GeneralEmbeds.Errors, [`{Error}---ChannelLockRoleIDS has no role IDS`])]})
     
     await message.delete()
     for(roleID of config.ChannelLockRoleIDS) {
@@ -12,7 +12,7 @@ module.exports.run = async (bot, message, args) => {
         await message.channel.permissionOverwrites.edit(FoundRole, { SEND_MESSAGES: null }).catch(err => { return })
     }
 
-    await message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.ModerationEmbeds.SucessfullyUnLocked, [`{Channel}:${message.channel.toString()}`], message.author)] })
+    await message.channel.send({ embeds: [functions.EmbedGenerator(bot, config.ModerationEmbeds.SucessfullyUnLocked, [`{Channel}---${message.channel.toString()}`], message.author)] })
 }
 
 const CommandHelp = require('../../Configuration/YML').LoadCommandConfiguration();

@@ -33,7 +33,7 @@ module.exports.AlreadyHasTicket = async (bot, Category, Channel, interaction, Us
         await TicketChannel.delete().catch(err => { return })
         return
     }
-    interaction.reply({ embeds: [ functions.EmbedGenerator(bot, config.TicketEmbeds.AlreadyHaveTicket, [`{TicketCategory}:${Category}`, `{TicketChannel}:${Channel.toString()}`]) ], ephemeral: true })
+    interaction.reply({ embeds: [ functions.EmbedGenerator(bot, config.TicketEmbeds.AlreadyHaveTicket, [`{TicketCategory}---${Category}`, `{TicketChannel}---${Channel.toString()}`]) ], ephemeral: true })
 }
 
 module.exports.TicketCounter = async () => {
@@ -95,7 +95,7 @@ module.exports.TicketCategorySelection = async (bot, TicketChannel, User) => {
 
     if(!config.TicketCategories[MenuResponse.values[0]].RequiredToOpenRoleIDs.some(role => bot.guilds.cache.get(config.GuildID).members.cache.find(member => member.id == User.id).roles.cache.find(roleid => roleid.id === role))) return exports.TicketCategoryNoPermission(bot, User, TicketChannel, config.TicketCategories[MenuResponse.values[0]].Name)
 
-    await MenuResponse.reply({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SelectedCategoryReply, [`{TicketCategory}:${config.TicketCategories[MenuResponse.values[0]].Name}`])] })
+    await MenuResponse.reply({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SelectedCategoryReply, [`{TicketCategory}---${config.TicketCategories[MenuResponse.values[0]].Name}`])] })
 
     await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: true }).catch(err => { return });
 
@@ -105,7 +105,7 @@ module.exports.TicketCategorySelection = async (bot, TicketChannel, User) => {
 }
 
 module.exports.TicketCategoryNoPermission = async (bot, User, TicketChannel, Category) => {
-    await User.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.TicketCategoryNoPermission, [`{TicketCategory}:${Category}`], User)] }).catch(err => { return })
+    await User.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.TicketCategoryNoPermission, [`{TicketCategory}---${Category}`], User)] }).catch(err => { return })
     await TicketChannel.delete().catch(err => { return; })
 }
 
@@ -131,7 +131,7 @@ module.exports.AutomatedTicketQuestions = async (bot, TicketCategory, TicketChan
         else {
             const QuestionFilter = collected => collected.author.id === User.id;
 
-            await TicketChannel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.AutomatedQuestionMessage, [`{Question}:${TicketQuestion}`])] })
+            await TicketChannel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.AutomatedQuestionMessage, [`{Question}---${TicketQuestion}`])] })
             let QuestionResponseAwait = await TicketChannel.awaitMessages({ QuestionFilter, max: 1, time: config.TicketQuestionTimeout })
 
             let QuestionResponse = QuestionResponseAwait.first()
@@ -170,7 +170,7 @@ module.exports.AutomatedTicketQuestions = async (bot, TicketCategory, TicketChan
 module.exports.TicketTimedOut = async (bot, User, TicketChannel) => {
     let CreateTicketChannel = bot.guilds.cache.get(config.GuildID).channels.cache.find(channel => channel.id == config.TicketChannelID)
     await TicketChannel.delete().catch(err => { return })
-    await User.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.TicketTimedOut, [`{CreateTicketChannel}:${CreateTicketChannel.toString()}`])] }).catch(err => { return })
+    await User.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.TicketTimedOut, [`{CreateTicketChannel}---${CreateTicketChannel.toString()}`])] }).catch(err => { return })
     return
 }
 
@@ -212,7 +212,7 @@ module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketC
         let MenuResponse = await MenuMessage.awaitMessageComponent({ MenuFilter, max: 1, time: config.TicketDropDownMenu.Timeout }).catch(err => { return })
         if(!MenuResponse) return exports.TicketTimedOut(bot, User, TicketChannel)
 
-        await MenuResponse.reply({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SelectedCategoryReply, [`{TicketCategory}:${config.TicketAdditionals[Additional][MenuResponse.values[0]].Name}`])] })
+        await MenuResponse.reply({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SelectedCategoryReply, [`{TicketCategory}---${config.TicketAdditionals[Additional][MenuResponse.values[0]].Name}`])] })
 
         await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: true }).catch(err => { return });
 
@@ -242,7 +242,7 @@ module.exports.TicketAdditionalsAutomatedQuestions = async (bot, TicketCategory,
         else {
             const QuestionFilter = collected => collected.author.id === User.id;
 
-            await TicketChannel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.AutomatedQuestionMessage, [`{Question}:${TicketQuestion}`])] })
+            await TicketChannel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.AutomatedQuestionMessage, [`{Question}---${TicketQuestion}`])] })
             let QuestionResponseAwait = await TicketChannel.awaitMessages({ QuestionFilter, max: 1, time: config.TicketQuestionTimeout })
 
             let QuestionResponse = QuestionResponseAwait.first()

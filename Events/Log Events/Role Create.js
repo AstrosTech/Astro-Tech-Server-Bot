@@ -11,7 +11,7 @@ module.exports = bot => {
         setTimeout(async () => {
             let UpdatedRole = role.guild.roles.cache.find(r => r.id == role.id)
             
-            await LogsChannel.send({ embeds: [ functions.EmbedGenerator(bot, config.Logs.RoleCreate.Embed, [`{RoleTag}:${UpdatedRole.toString()}`,`{RoleName}:${UpdatedRole.name}`, `{RoleID}:${role.id}`, `{RoleColor}:${UpdatedRole.color}`, `{RolePosition}:${UpdatedRole.rawPosition}`], null)] })
+            await LogsChannel.send({ embeds: [ functions.EmbedGenerator(bot, config.Logs.RoleCreate.Embed, [`{RoleTag}---${UpdatedRole.toString()}`,`{RoleName}---${UpdatedRole.name}`, `{RoleID}---${role.id}`, `{RoleColor}---${UpdatedRole.color}`, `{RolePosition}---${UpdatedRole.rawPosition}`], null)] })
         }, 10000);
     })
 }
