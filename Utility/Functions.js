@@ -275,7 +275,6 @@ module.exports.VerifyPermissions = async (Permissions, Member) => {
     return false;
 }
 
-
 module.exports.InsufficientPermissions = async (bot, Guild, Help, User, Channel) => {
     let Permissions = []
 

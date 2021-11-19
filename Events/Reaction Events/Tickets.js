@@ -22,7 +22,8 @@ module.exports = bot => {
         if(!TicketCategory) return
 
         let AutomatedQuestionResponses = await TicketUtility.AutomatedTicketQuestions(bot, config.TicketCategories[TicketCategory], TicketChannel, interaction.user)
-
+        if(!AutomatedQuestionResponses) return
+        
         await TicketChannel.bulkDelete(100).catch(err => { console.log(err) })
         const [FirstDescription, ...RestDescription] = Discord.Util.splitMessage(AutomatedQuestionResponses.UserResponses.join("\n"), { maxLength: 4000, char: "\n" })
         await TicketChannel.send({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.FinalTicketEmbed, [`{AutomatedQuestions}:${FirstDescription}`], interaction.user)] })

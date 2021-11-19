@@ -92,6 +92,7 @@ module.exports.TicketCategorySelection = async (bot, TicketChannel, User) => {
 
     await MenuResponse.reply({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SelectedCategoryReply, [`{TicketCategory}:${config.TicketCategories[MenuResponse.values[0]].Name}`])] })
 
+    await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: true }).catch(err => { return });
 
     await TicketChannel.setTopic(`${User.id}-${config.TicketCategories[MenuResponse.values[0]].ParentID}`)
     await TicketChannel.setParent(config.TicketCategories[MenuResponse.values[0]].ParentID, { lockPermissions: false })
@@ -151,7 +152,7 @@ module.exports.AutomatedTicketQuestions = async (bot, TicketCategory, TicketChan
         let StaffRole = await bot.guilds.cache.get(config.GuildID).roles.cache.find(role => role.id == StaffIDS)
         if(!StaffRole) continue
         
-        await TicketChannel.permissionOverwrites.edit(StaffRole, { VIEW_CHANNEL: true });
+        await TicketChannel.permissionOverwrites.edit(StaffRole, { VIEW_CHANNEL: true }).catch(err => { return });
 
         Staff.push(StaffRole.toString())
     }
@@ -173,7 +174,7 @@ module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketC
     if(!Additional || !TicketChannel) return
 
     let row = new Discord.MessageActionRow()
-    await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: false });
+    await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: false }).catch(err => { return });
 
     let DropDownMenu = new Discord.MessageSelectMenu()
     .setCustomId(`${TicketChannel.id}-Additional`)
@@ -208,8 +209,8 @@ module.exports.TicketAdditionalsCategorySelect = async (bot, Additional, TicketC
 
         await MenuResponse.reply({ embeds: [functions.EmbedGenerator(bot, config.TicketEmbeds.SelectedCategoryReply, [`{TicketCategory}:${config.TicketAdditionals[Additional][MenuResponse.values[0]].Name}`])] })
 
-        await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: true });
-        
+        await TicketChannel.permissionOverwrites.edit(User, { SEND_MESSAGES: true }).catch(err => { return });
+
         if(config.TicketAdditionals[Additional][MenuResponse.values[0]].ParentID) await TicketChannel.setParent(config.TicketAdditionals[Additional][MenuResponse.values[0]].ParentID, { lockPermissions: false })
         return MenuResponse.values[0]
 }
