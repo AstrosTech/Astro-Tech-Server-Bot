@@ -60,8 +60,6 @@
 #       Important Configuration        #
 #                                      #
 ########################################
-Token: ODY0MjQ0NDg0ODUzMzM0MDU5.YOyoZg.x5m7Occ2Du4ybzx-KxeOgfOTGXo
-MongoDBURL: mongodb+srv://Astro:VcGRdclAKV42KbNz@cluster0.mejke.mongodb.net/AstroTech?retryWrites=true&w=majority
 Prefix:
   - "."
   - "-"

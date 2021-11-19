@@ -1,10 +1,9 @@
 const mongoose = require('mongoose')
-const config = require('../Configuration/YML').getConfiguration();
 const chalk = require('chalk')
 
 async function LoadDatabase() {
     console.log(chalk.magentaBright("Connecting to database..."))
-    await mongoose.connect(config.MongoDBURL, {
+    await mongoose.connect(process.env.MongoDBURL, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
