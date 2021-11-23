@@ -292,3 +292,20 @@ ModerationCommands:
       - "865701485613547541"
     cooldown: 0
     enabled: true
+
+GiveawayCommands:
+  HelpDropDown:
+    Label: "Giveaway Commands"
+    Description: "Server Giveaway Commands"
+    Emoji: "🎉"
+  gStart:
+    name: "gstart"
+    description: ""
+    usage: "gstart <channel id>"
+    aliases:
+    permissions:
+      - "ADMINISTRATOR"
+      - "183340750422016001"
+      - "865701485613547541"
+    cooldown: 0
+    enabled: true

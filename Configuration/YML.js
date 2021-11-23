@@ -2,6 +2,7 @@ const yaml = require('js-yaml')
 const fs = require('fs')
 const chalk = require('chalk')
 let Configuration
+
 module.exports.LoadConfiguration = () => {
         try{
         Configuration = yaml.safeLoad(fs.readFileSync('./Configuration/Config.yml', 'utf8'))

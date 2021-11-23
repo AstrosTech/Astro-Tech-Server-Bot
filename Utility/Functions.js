@@ -13,12 +13,21 @@ module.exports.Start = (bot) => {
     }
     figlet.text("Astro Tech", function (err, data) { if(err) console.trace(err); console.log(chalk.bold(chalk.blueBright(data) + chalk.white(`\nBot Information:`) + chalk.white(`\n\u2003\u2003\u2003Username: `) + chalk.green(`${bot.user.username}`) + chalk.white(`\n\u2003\u2003\u2003ID: `) + chalk.green(`${bot.user.id}`) + chalk.white(`\n\u2003\u2003\u2003Guilds: `) + chalk.green(`${bot.guilds.cache.map(guild => guild.name).join(", ")}`) + chalk.white(`\n\u2003\u2003\u2003Start Time: `) + chalk.green(`${moment().tz('America/New_York').format("dddd, MMMM Do, h:mm a")} EST`))) })
 
+    exports.scheduleFeatures(bot)
     exports.SetupTickets(bot, Guild)
     exports.SetupVerification(bot, Guild)
     exports.Status(bot)
     exports.Statistics(bot, Guild)
     exports.SetupSuggestions(bot, Guild)
     exports.SetupReactRoles(bot, Guild)
+}
+
+module.exports.scheduleFeatures = async (bot) => {
+    const GiveawayUtility = require('./GiveawayUtility')
+    let GiveawayDatabase = require('../Database/Models/GiveawaysModel')
+    let Giveaways = await GiveawayDatabase.find({ Active: true })
+
+    GiveawayUtility.scheduleGiveaway(bot, Giveaways)
 }
 
 module.exports.SetupReactRoles = async (bot, Guild) => {

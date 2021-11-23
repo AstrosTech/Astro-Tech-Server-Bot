@@ -754,3 +754,24 @@ ModerationEmbeds:
     Image: ""
     Thumbnail: ""
     Footer: "{ServerName} • {TimeStamp}"
+
+########################################
+#                                      #
+#       Giveaway Configuration         #
+#                                      #
+########################################
+GiveawayEmbeds:
+  Giveaway: # {Prize}, {EndDate}, {WinnerLength}
+    Title: "{ServerName} Giveaways"
+    Color: "{ServerColor}"
+    Description: ":tada: **{Prize}** :tada:\n\nWinners: **{WinnerLength}**\nEnd Date: **{EndDate}**"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
+  GiveawayWinners: #{Winners} {GiveawayLink}
+    Title: "{ServerName} Giveaways"
+    Color: "{ServerColor}"
+    Description: "**Winners:** {Winners}\n\n[Jump to Giveaway]({GiveawayLink})"
+    Image: ""
+    Thumbnail: ""
+    Footer: "{ServerName} • {TimeStamp}"
