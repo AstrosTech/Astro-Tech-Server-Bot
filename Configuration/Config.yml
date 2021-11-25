@@ -35,6 +35,7 @@
 #     {UserDiscriminator}                   #
 #     {UserPing}                            #
 #     {AvatarURL}                           #
+#     {JoinedAt}                            #
 #############################################
 #     General Placeholders:                 #
 #     {GuildID}                             #
