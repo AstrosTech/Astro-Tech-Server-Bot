@@ -171,6 +171,7 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
         .replace("{UserID}", user.id)
         .replace("{Username}", user.username)
         .replace("{CreatedOn}", moment(user.createdAt).format('llll'))
+        .replace("{CreatedOn}", moment(user.member.joinedAt).format('llll'))
         .replace("{UserDiscriminator}", user.discriminator)
         .replace("{UserPing}", user.toString())
         .replace("{AvatarURL}", AvatarURL)
