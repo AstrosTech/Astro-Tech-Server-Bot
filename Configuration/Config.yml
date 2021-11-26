@@ -488,6 +488,7 @@ WelcomeEmbed:
 #                                      #
 ########################################
 # Add as many as you want (Use default Embed Placeholders)
+StatisticsRefreshRate: 10000
 Statistics:
   TotalMembers:
     ChannelID: "886117427983843368"

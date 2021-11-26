@@ -18,6 +18,8 @@ module.exports.Start = (bot) => {
     exports.SetupVerification(bot, Guild)
     exports.Status(bot)
     exports.Statistics(bot, Guild)
+
+    setInterval(() => { exports.Statistics(bot, Guild) }, config.StatisticsRefreshRate);
     exports.SetupSuggestions(bot, Guild)
     exports.SetupReactRoles(bot, Guild)
 }
