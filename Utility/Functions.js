@@ -290,7 +290,6 @@ module.exports.InsufficientPermissions = async (bot, Guild, Help, User, Channel)
     let Permissions = []
 
     for(Permission of Help.permissions) {
-        
         let RoleCheck = await Guild.roles.cache.find(role => role.id === Permission)
         if(RoleCheck) {
             Permissions.push(RoleCheck.toString())
