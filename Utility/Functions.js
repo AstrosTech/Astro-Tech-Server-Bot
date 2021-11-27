@@ -164,6 +164,7 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
         }
     }
 
+    let Guild = bot.guilds.cache.get(config.GuildID)
     if(user != null) {
         let AvatarURL;
         if(user.avatar) AvatarURL = user.avatarURL()
@@ -173,12 +174,11 @@ module.exports.Placeholders = (bot, message, user, placeholders) => {
         .replace("{UserID}", user.id)
         .replace("{Username}", user.username)
         .replace("{CreatedOn}", moment(user.createdAt).format('llll'))
-        .replace("{CreatedOn}", moment(user.member.joinedAt).format('llll'))
+        .replace("{JoinedAt}", moment(Guild.members.cache.get(user.id).joinedAt).format('llll'))
         .replace("{UserDiscriminator}", user.discriminator)
         .replace("{UserPing}", user.toString())
         .replace("{AvatarURL}", AvatarURL)
     }
-    let Guild = bot.guilds.cache.get(config.GuildID)
     
     ReplacedMessage = ReplacedMessage
     .replace("{GuildID}", Guild.id)
