@@ -179,7 +179,7 @@ ExampleEmbed:
 TicketsEnabled: true
 TicketChannelID: "882695643531976714"
 TicketMessageID: "883163456453378109"
-TicketLogChannelID: "879477719556055041"
+TicketLogChannelID: "890507314476494929"
 TicketButton:
   Label: Create Ticket!
   Style: PRIMARY
