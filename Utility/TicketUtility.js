@@ -63,8 +63,8 @@ module.exports.TicketCategorySelection = async (bot, TicketChannel, User) => {
     .setPlaceholder(config.TicketDropDownMenu.PlaceHolder)
     
     let CategoriesLength = Object.keys(config.TicketCategories).length
-    if(CategoriesLength == 0)
-    console.log(CategoriesLength)
+    
+    if(CategoriesLength == 0) return
     if(CategoriesLength == 1) return Object.keys(config.TicketCategories)[0]
 
     for (let i = 0; i < CategoriesLength; i++) {
@@ -87,7 +87,7 @@ module.exports.TicketCategorySelection = async (bot, TicketChannel, User) => {
     if(DropDownMenu.options.length < 1) return exports.AlreadyHasTicket(bot, "All", TicketChannel, null, User, TicketChannel)
 
     row.addComponents(DropDownMenu)
-    let MenuMessage = await TicketChannel.send({embeds:[functions.EmbedGenerator(bot, config.TicketEmbeds.CategorySelectEmbed, null)], components: [row]})
+    let MenuMessage = await TicketChannel.send({ embeds:[functions.EmbedGenerator(bot, config.TicketEmbeds.CategorySelectEmbed, null)], components: [row] })
     
     let MenuFilter = (interaction) => { interaction.user.id === TicketChannel.topic; return row }
     let MenuResponse = await MenuMessage.awaitMessageComponent({MenuFilter, max: 1, time: config.TicketDropDownMenu.Timeout}).catch(err => { return })

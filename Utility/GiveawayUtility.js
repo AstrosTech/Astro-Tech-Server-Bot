@@ -3,9 +3,9 @@ const GiveawayDatabase = require('../Database/Models/GiveawaysModel')
 const schedule = require('node-schedule')
 const functions = require('./Functions')
 const ms = require('ms')
-const chalk = require('chalk')
 const moment = require('moment')
-const { save } = require('mongoose')
+
+
 module.exports.getResponses = async (bot, channel, UserID) => {
     let ShouldBreak = false;
     let GiveawayQuestions = ["`What is the prize of the giveaway?`", "`How long will this giveaway last?`", "`How many winners will there be?`"]
