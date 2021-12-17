@@ -4,7 +4,6 @@ const moment = require('moment-timezone');
 const chalk = require('chalk')
 const figlet = require('figlet');
 
-
 module.exports.Start = (bot) => {
     let Guild = bot.guilds.cache.get(config.GuildID)
     if(!Guild) {
@@ -88,7 +87,7 @@ module.exports.Status = (bot) => {
     }, config.ActivityRefreshRate);
 }
 
-module.exports.SetupTickets = async (bot, Guild) => {
+module.exports.SetupVerification = async (bot, Guild) => {
     if(config.VerificationEnabled != true) return exports.LogToConsole("Verification Disabled.")
 
     let VerificationChannel = Guild.channels.cache.find(channel => channel.id == config.VerificationChannelID)
@@ -105,7 +104,7 @@ module.exports.SetupTickets = async (bot, Guild) => {
     }
 }
 
-module.exports.SetupVerification = async (bot, Guild) => {
+module.exports.SetupTickets = async (bot, Guild) => {
     if(config.TicketsEnabled != true) return exports.LogToConsole("Tickets Disabled.")
 
     let TicketChannel = Guild.channels.cache.find(channel => channel.id == config.TicketChannelID)
@@ -272,7 +271,6 @@ module.exports.Statistics = async (bot, Guild) => {
 }
 
 module.exports.VerifyPermissions = async (Permissions, Member) => {
-
     if(!Permissions) return false;
     
     if(Permissions.some(AllowedRole => Member.roles.cache.find(userrole => userrole.id === AllowedRole))) return true;

@@ -52,8 +52,6 @@ module.exports.TicketCounter = async () => {
     return s.substr(s.length-4);
 }
 
-
-
 module.exports.TicketCategorySelection = async (bot, TicketChannel, User) => {
     if(!TicketChannel) return
     let row = new Discord.MessageActionRow()
