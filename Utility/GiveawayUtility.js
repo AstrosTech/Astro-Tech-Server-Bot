@@ -127,9 +127,8 @@ module.exports.determineWinners = (Entries, Max) => {
 
     let ChoosenNumbers = []
     let WinnersArray = []
-    let i = 0
 
-    while(i != Max) {
+    while(WinnersArray != Max) {
         let Random = Math.floor(Math.random() * Entries.length)
         let SelectedUser = Entries[Random]
 
