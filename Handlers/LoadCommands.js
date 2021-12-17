@@ -6,7 +6,7 @@ const load = dirs => {
             for (const file of commands) {
                 const props = require(`../Commands/${dirs}/${file}`)
                 
-                if(!props.help) return;
+                if(!props.help) continue;
                 if(props.help.enabled == false) continue
 
                 bot.commands.set(props.help.name, props);
