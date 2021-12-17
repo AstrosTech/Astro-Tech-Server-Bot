@@ -33,7 +33,7 @@ module.exports.run = async (bot, message, args) => {
     
     let Transcript = await TranscriptUtility.createTranscript(message.channel);
     await TicketLogChannel.send({ embeds: [ functions.EmbedGenerator(bot, config.TicketEmbeds.ClosedTicket, [`{LastFiveMessages}---${LastFiveMessages.map(m => m.author.username + ": " + m.content.toString()).join("\n")}`, `{TicketChannel}---${message.channel.name}`, `{TicketCreatorPing}---${TicketUserPing}`, `{TicketUserTag}---${TicketUserDiscriminator}`, `{Reason}---${Reason}` ], message.author) ], files: [Transcript] })
-    if(TicketMember) await TicketMember.send({ embeds: [ functions.EmbedGenerator(bot, config.TicketEmbeds.ClosedTicket, [`{LastFiveMessages}---${LastFiveMessages.map(m => m.content.toString()).join("\n")}`, `{TicketChannel}---${message.channel.name}`, `{TicketCreatorPing}---${TicketUserPing}`, `{TicketUserTag}---${TicketUserDiscriminator}`, `{Reason}---${Reason}` ], message.author) ], files: [Transcript] }).catch(err => { return })
+    if(TicketMember) await TicketLogChannel.send({ embeds: [ functions.EmbedGenerator(bot, config.TicketEmbeds.ClosedTicket, [`{LastFiveMessages}---${LastFiveMessages.map(m => m.author.username + ": " + m.content.toString()).join("\n")}`, `{TicketChannel}---${message.channel.name}`, `{TicketCreatorPing}---${TicketUserPing}`, `{TicketUserTag}---${TicketUserDiscriminator}`, `{Reason}---${Reason}` ], message.author) ], files: [Transcript] }).catch(err => { return })
 
     await message.channel.delete().catch(err => { return })
 }
