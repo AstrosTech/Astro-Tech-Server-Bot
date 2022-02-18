@@ -288,8 +288,24 @@ ModerationCommands:
     aliases:
     permissions:
       - "ADMINISTRATOR"
-      - "183340750422016001"
-      - "865701485613547541"
+    cooldown: 0
+    enabled: true
+  Mute:
+    name: "mute"
+    description: "Mutes Users"
+    usage: "mute <user>"
+    aliases:
+    permissions:
+      - "ADMINISTRATOR"
+    cooldown: 0
+    enabled: true
+  UnMute:
+    name: "unmute"
+    description: "unmutes Users"
+    usage: "unmute <user>"
+    aliases:
+    permissions:
+      - "ADMINISTRATOR"
     cooldown: 0
     enabled: true
 
