@@ -148,8 +148,6 @@ module.exports.AutomatedTicketQuestions = async (bot, TicketCategory, TicketChan
 
             UserResponses.push(`**${TicketQuestion}**\n\`\`\`${QuestionResponse}\`\`\``)
         }
-
-        return { UserResponses, UserImages}
     }
     
     let Staff = []
