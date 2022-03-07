@@ -109,32 +109,32 @@ module.exports.endGiveaway = async (bot, Giveaway) => {
         while(Users.size === 100) {
             const LastUser = Users.last()
 
-            Users = Reactions.users.fetch({ after: LastUser.id })
+            Users = await Reactions.users.fetch({ after: LastUser.id })
 
             Entries = Entries.concat(Users)
         }
         
         Entries = [...Entries.values()]
-        let Winners = exports.determineWinners(Entries, Giveaway.WinnerLength, GiveawayChannel.guild)
+        let Winners = await exports.determineWinners(Entries, Giveaway.WinnerLength, GiveawayChannel.guild)
 
         await exports.updateGiveaway(Giveaway)
 
         await GiveawayChannel.send({ embeds: [ functions.EmbedGenerator(bot, config.GiveawayEmbeds.GiveawayWinners, [`{Winners}---${Winners.map(user => user.toString()).join(" ")}`, `{GiveawayLink}---https://discord.com/channels/${config.GuildID}/${Giveaway.ChannelID}/${Giveaway.MessageID}`])]})
 }
 
-module.exports.determineWinners = (Entries, Max) => {
+module.exports.determineWinners = (Entries, Max, Guild) => {
     if(Entries.length <= Max) return Entries
 
     let ChoosenNumbers = []
     let WinnersArray = []
 
-    while(WinnersArray != Max) {
+    while(WinnersArray.length != Max) {
         let Random = Math.floor(Math.random() * Entries.length)
         let SelectedUser = Entries[Random]
 
         let member = Guild.members.cache.get(SelectedUser.id)
         if(!ChoosenNumbers.includes(Random) && !SelectedUser.bot && member) {
-            WinnersArray.push(member.first().toString())
+            WinnersArray.push(member.toString())
         }
     }
 

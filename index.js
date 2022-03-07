@@ -1,7 +1,9 @@
+
 const Discord = require('discord.js');
-const config = require('./Configuration/YML').LoadConfiguration()
-const functions = require('./Utility/Functions')
+require('./Configuration/YML').LoadConfiguration()
 require('dotenv').config()
+
+const functions = require('./Utility/Functions')
 const bot = new Discord.Client({
         intents: ["GUILDS","GUILD_MEMBERS","GUILD_BANS", "GUILD_EMOJIS_AND_STICKERS", "GUILD_INTEGRATIONS", "GUILD_INVITES", "GUILD_VOICE_STATES", "GUILD_PRESENCES", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS", "DIRECT_MESSAGES"]
 });
@@ -17,4 +19,3 @@ require("./Database/Connect")
 bot.once("ready", async () => { functions.Start(bot) })
 bot.login(process.env.Token)
 
-const moment = require('moment-timezone')
